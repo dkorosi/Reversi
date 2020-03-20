@@ -32,3 +32,21 @@ sötét és világos korongot. A sötét korongok ÉK-DNY, míg a világos koron
 Ha megtelik a tábla, vagy ha egyik játékos sem tud érvényes lépést tenni,
 azaz ha egymás után mindkét játékos passzol. Ilyenkor meg kell számolni a
 táblán lévő korongokat szín szerint. A több koronggal rendelkező játékos nyer.
+
+## Az alkalmazás funciói
+Az alkalmazás több extra funkcióval is rendelkezik, ezzel növelve a játékélményt.
+
+### Egy- és többjátékos mód
+A felhasználó képes a saját számítógépén AI ellen játékot indítani, emellett helyi hálózaton képes egy másik személy ellen játszani. A hálózati játék megkezdése előtt meg kell adni egy felhasználónév és IP cím kombinációt, amely segítségével kapcsolódhat a két kliens.
+
+### Többszintű néhézségi szint
+A felhasználó az egyszemélyes játékmódban több nehézségi szinten tud a számítógép ellen játszani. 
+Emellett többjátékos módban lehetőség van maximális lépésre fordítható idő beállítására, ezzel is finomhangolva a nehézségi szintet.
+
+### Grafikus Interface
+A játék indítása és a beállításai is mind grafikus felületen történnek. A játék alatti grafikus interface segítségével a játékosok követni tudják a játék alakulását, ezen keresztül képesek lépni és a saját, illetve az ellenfél lépéseit, a tábla jelenlegi állását megtekinteni. Ezen felül képesek megtekinteni az érvényes lépéseket.
+
+### Mentés és betöltés
+Egyjátékos módban lehetőség van a játékállás elmentésére és későbbi betöltésére.
+
+Többjátékos müdban a végeredmények elmentésére és ezek megjelenítésére.
