@@ -48,5 +48,4 @@ A játék indítása és a beállításai is mind grafikus felületen történne
 
 ### Mentés és betöltés
 Egyjátékos módban lehetőség van a játékállás elmentésére és későbbi betöltésére.
-
-Többjátékos müdban a végeredmények elmentésére és ezek megjelenítésére.
+Többjátékos módban a végeredmények elmentésére és ezek megjelenítésére.
