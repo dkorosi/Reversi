@@ -1,4 +1,4 @@
-#Tervdokumentáció
+# Tervdokumentáció
 ## Áttekintés
 ### Az alkalmazás funciói
 #### Egy- és többjátékos mód
@@ -52,9 +52,9 @@ beállítva.
 Egyszemélyes mód esetén mentés és kilépés gomb lesz a felületen, tőbbjátékos mód esetén csak kilépés.
 Időzítő beállítása esetén egy visszaszámláló is megjelenik.
 
-##UML osztálydiagram
+## UML osztálydiagram
 ![UML class diagram](uml_class.png)
-##Főbb osztályok és feladataik
+## Főbb osztályok és feladataik
 - GuiController
   - Főmenü megjelenítése
   - Beállítások módosítása
@@ -73,11 +73,11 @@ Időzítő beállítása esetén egy visszaszámláló is megjelenik.
 - Connection
   - Felveszi a kapcsolatot a másik játékossal
   - Várja a másik játékos lépéseit
-##Használt technológiák
+## Használt technológiák
 - A grafikus megjelenítéshez JavaFX könyvtár és Scene Builder program használata
 - Beállítások módosítására és beolvasására Preferences API
 - Hálózati kapcsolat kezelésére a java.net könyvtárat használjuk
-##Feladatmegosztás
+## Feladatmegosztás
 - Bence
   - Játék logikája
   - Hálózatkezelés
