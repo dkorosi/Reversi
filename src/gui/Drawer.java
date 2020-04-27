@@ -3,6 +3,7 @@ package gui;
 import gamelogic.Board;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 
 public class Drawer extends AnimationTimer {
 
@@ -15,6 +16,7 @@ public class Drawer extends AnimationTimer {
     public Drawer(Canvas canvas, Board board) {
         this.canvas = canvas;
         this.board = board;
+
     }
 
     // Minden képfrissítésnél lefut
@@ -28,5 +30,6 @@ public class Drawer extends AnimationTimer {
 
     private void drawBoard() {
         // Itt a Canvas-ra kirajzoljuk a Board-ot
+
     }
 }

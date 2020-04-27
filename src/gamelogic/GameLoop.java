@@ -19,6 +19,7 @@ public class GameLoop implements Runnable {
         boolean stop = false;
         drawer.start();
         while (true) {
+
             if (stop) {
                 drawer.stop();
                 break;

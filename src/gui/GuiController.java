@@ -3,13 +3,20 @@ package gui;
 import gamelogic.GameLoop;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class GuiController {
     private Stage stage;
@@ -26,7 +33,12 @@ public class GuiController {
 
     @FXML
     private TextField multiIPAddrText;
+    //second scene
+    @FXML
     Canvas canvas;
+    @FXML
+    private TextField timerCountDown;
+
 
     public ToggleGroup getStartingColorTG() {
 
@@ -38,9 +50,9 @@ public class GuiController {
     }
 
     @FXML
-    void startSingleGame(ActionEvent event) {
+    void startSingleGame(ActionEvent event) throws IOException {
         GameLoop game = new GameLoop(canvas);
-        //stage.setScene();
+        changeSceneToCanvas(event);
         System.out.println("Start Single GAME");
     }
     @FXML
@@ -59,10 +71,16 @@ public class GuiController {
         System.out.println("The name is: "+ Name + "\n" + "The IP Address is: " + IPAddr);
     }
     @FXML
-    double getTimerSliderVal(MouseEvent event) {
+    double getTimerSliderSingleVal(MouseEvent event) {
         System.out.println("Slide");
-        return timerSlider.getValue();
+        return timerSliderSingle.getValue();
     }
+    @FXML
+    double getTimerSliderMultiVal(MouseEvent event) {
+        System.out.println("Slide");
+        return timerSliderMulti.getValue();
+    }
+
 
     @FXML
     String getMultiNameText() {
@@ -73,11 +91,24 @@ public class GuiController {
         return multiIPAddrText.getText();
     }
 
-    public Stage getStage() {
-        return stage;
-    }
+    public void changeSceneToCanvas(ActionEvent event) throws IOException {
+        Parent canvasDrawerParent = FXMLLoader.load(getClass().getResource("canvasDrawer.fxml"));
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
+        Scene canvasDrawerScene = new Scene(canvasDrawerParent, 700, 510);
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        window.setScene((canvasDrawerScene));
+        window.show();
+
+    }
+    public void changeSceneToMenu(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
+
+        Scene guiScene = new Scene(root, 654, 460);
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene((guiScene));
+        window.show();
     }
 }
+
+
