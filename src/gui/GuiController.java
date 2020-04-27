@@ -9,8 +9,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class GuiController {
+    private Stage stage;
     @FXML
     private Slider timerSlider;
     @FXML
@@ -36,6 +38,7 @@ public class GuiController {
     @FXML
     void startSingleGame(ActionEvent event) {
         GameLoop game = new GameLoop(canvas);
+        //stage.setScene();
         System.out.println("Start Single GAME");
     }
     @FXML
@@ -66,5 +69,13 @@ public class GuiController {
     @FXML
     String getMultiIPAddrText() {
         return multiIPAddrText.getText();
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 }

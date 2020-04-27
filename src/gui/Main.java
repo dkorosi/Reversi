@@ -7,15 +7,22 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    Stage window;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
-        primaryStage.setTitle("Reversi");
-        primaryStage.setResizable(false);
-        primaryStage.setScene(new Scene(root, 654, 460));
-        primaryStage.show();
+        window = primaryStage;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gui.fxml"));
+        Parent root = (Parent) fxmlLoader.load();
+        ((GuiController)fxmlLoader.getController()).setStage(window);
+        window.setTitle("Reversi");
+        window.setResizable(false);
+        window.setScene(new Scene(root, 654, 460));
+        window.show();
+
     }
+
+
 
 
     public static void main(String[] args) {
