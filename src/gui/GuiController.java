@@ -14,7 +14,9 @@ import javafx.stage.Stage;
 public class GuiController {
     private Stage stage;
     @FXML
-    private Slider timerSlider;
+    private Slider timerSliderSingle;
+    @FXML
+    private Slider timerSliderMulti;
     @FXML
     private ToggleGroup startingColorTG;
     @FXML
