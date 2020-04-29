@@ -52,6 +52,8 @@ public class GuiController {
     @FXML
     void startSingleGame(ActionEvent event) throws IOException {
         GameLoop game = new GameLoop(canvas);
+        Thread th = new Thread(game);
+        th.start();
         changeSceneToCanvas(event);
         System.out.println("Start Single GAME");
     }
