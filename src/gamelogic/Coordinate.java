@@ -1,15 +1,28 @@
 package gamelogic;
 
-public class Move {
+/**
+ * A lépések megadásához szükséges koordinátákat megvalósító osztály.
+ * @author borszag
+ */
+public class Coordinate {
     Integer x;
     Integer y;
 
-    public Move(Integer x, Integer y) {
+    public Coordinate(Integer x, Integer y) {
         this.x = x;
         this.y = y;
     }
 
-    public Move step(Direction dir) {
+    public Coordinate(Coordinate pos) {
+        this.x = pos.x;
+        this.y = pos.y;
+    }
+
+    /**
+     * A megadott koordinátát egy szomszédos mezőre léptető tagfüggvény.
+     * @param dir A lépés iránya
+     */
+    public void step(Direction dir) {
         switch (dir) {
             case N:
                 this.y += 1;
@@ -42,6 +55,5 @@ public class Move {
             default:
                 break;
         }
-        return this;
     }
 }
