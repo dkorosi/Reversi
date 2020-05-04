@@ -1,6 +1,7 @@
 package gui;
 
 import gamelogic.Board;
+import gamelogic.Coordinate;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,6 +31,10 @@ public class Drawer extends AnimationTimer {
 
     private void drawBoard() {
         // Itt a Canvas-ra kirajzoljuk a Board-ot
+        int x = 0;
+        int y = 0;
+
+    this.board.getTile(new Coordinate(x,y));
 
     }
 }

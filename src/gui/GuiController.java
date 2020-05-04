@@ -35,7 +35,7 @@ public class GuiController {
     private TextField multiIPAddrText;
     //second scene
     @FXML
-    Canvas canvas;
+    private Canvas canvas;
     @FXML
     private TextField timerCountDown;
 

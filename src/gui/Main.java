@@ -11,8 +11,7 @@ public class Main extends Application {
     Stage window;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        window = primaryStage;
+    public void start(Stage window) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
         window.setTitle("Reversi");
         window.setResizable(false);
