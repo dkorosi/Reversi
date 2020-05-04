@@ -133,6 +133,10 @@ public class Board {
         return validCoordinates;
     }
 
+    public ArrayList<ArrayList<TileType>> getBoard() {
+        return board;
+    }
+
     private void setTile(TileType newTileType, Integer x, Integer y) {
         this.board.get(x).set(y, newTileType);
     }
