@@ -5,7 +5,7 @@ package gamelogic;
  * sarokban van.
  * @author borszag
  */
-enum Direction {
+public enum Direction {
     N,
     NE,
     E,
