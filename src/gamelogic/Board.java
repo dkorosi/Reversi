@@ -151,7 +151,7 @@ public class Board {
     }
 
     private boolean isValidPos(Coordinate pos) {
-        return pos.getX() < width && pos.getY() < height;
+        return 0 <= pos.getX() && pos.getX() < width && 0 <= pos.getY() && pos.getY() < height;
     }
 
     private void getValidMoves() {
