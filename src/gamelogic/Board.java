@@ -62,7 +62,7 @@ public class Board {
          */
         private void countReversible() {
             this.valid = false;
-            if (!isValidPos(this.pos) || getTile(this.pos) != TileType.EMPTY) {
+            if (!isValidPos(this.pos) || TileType.EMPTY != getTile(this.pos)) {
                 return;
             }
             for (Direction dir : Direction.values()) {
@@ -74,7 +74,7 @@ public class Board {
                     pos.step(dir);
                 } while (isValidPos(pos) && getTile(pos) == opponent.getColor());
 
-                if (oppCount <= 0 || !isValidPos(pos) || getTile(pos) != current.getColor()) {
+                if (0 >= oppCount || !isValidPos(pos) || getTile(pos) != current.getColor()) {
                     this.tileCount.put(dir,0);
                 } else {
                     this.tileCount.put(dir,oppCount);
@@ -111,10 +111,10 @@ public class Board {
         setTile(TileType.LIGHT, 4, 4);
         setTile(TileType.DARK,  3, 4);
         setTile(TileType.DARK,  4, 3);
-        if (one.getColor() == TileType.DARK && two.getColor() == TileType.LIGHT) {
+        if (TileType.DARK == one.getColor() && TileType.LIGHT == two.getColor()) {
             current = one;
             opponent = two;
-        } else if (one.getColor() == TileType.LIGHT && two.getColor() == TileType.DARK) {
+        } else if (TileType.LIGHT == one.getColor() && TileType.DARK == two.getColor()) {
             current = two;
             opponent = one;
         } // TODO exception in else branch: Players have the same color.
@@ -195,12 +195,12 @@ public class Board {
         current = opponent;
         opponent = temp;
         getValidMoves();
-        if (validMoves.size() == 0) {
+        if (0 == validMoves.size()) {
             temp = current;
             current = opponent;
             opponent = temp;
             getValidMoves();
-            if (validMoves.size() == 0) {
+            if (0 == validMoves.size()) {
                 active = false;
             }
             return false;
