@@ -145,7 +145,7 @@ public class Board {
         this.board.get(pos.getX()).set(pos.getY(), newTileType);
     }
 
-    private TileType getTile(Coordinate move) {
+    public TileType getTile(Coordinate move) {
         if (!isValidPos(move)) return TileType.EMPTY;
         return this.board.get(move.getX()).get(move.getY());
     }
@@ -169,6 +169,22 @@ public class Board {
 
     public boolean isActive() {
         return active;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Player getOpponent() {
+        return opponent;
+    }
+
+    public Player getCurrent() {
+        return current;
     }
 
     // Ennek a függvénynek célszerűen void a visszatérési értéke, most azt jelzi, hogy az aktív játékos személye
