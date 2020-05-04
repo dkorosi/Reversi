@@ -37,25 +37,25 @@ public class Board {
     /**
      * A játéktábla magassága.
      */
-    Integer width;
+    private int width;
     /**
      * A  játéktábla szélessége.
      */
-    Integer height;
+    private int height;
     /**
      * Jelzi, ha vége a játéknak, azaz nem tehető több lépés.
      */
-    boolean active;
+    private boolean active;
     /**
      * Az aktuális körben az ellenfél játékos.
      */
-    Player opponent;
+    private Player opponent;
     /**
      * Az aktuális körben lépést végrehajtó játékos.
      */
-    Player current;
-    ArrayList<ArrayList<TileType>> board;
-    ArrayList<PossibleMove> validMoves;
+    private Player current;
+    private ArrayList<ArrayList<TileType>> board;
+    private ArrayList<PossibleMove> validMoves;
 
     /**
      * A lépési szabályokat ellenőrző osztály.
@@ -92,18 +92,18 @@ public class Board {
                 return;
             }
             for (Direction dir : Direction.values()) {
-                int opp_count = -1;
+                int oppCount = -1;
                 Coordinate pos = new Coordinate(this.pos);
 
                 do {
-                    opp_count++;
+                    oppCount++;
                     pos.step(dir);
                 } while (isValidPos(pos) && getTile(pos) == opponent.getColor());
 
-                if (opp_count <= 0 || !isValidPos(pos) || getTile(pos) != current.getColor()) {
+                if (oppCount <= 0 || !isValidPos(pos) || getTile(pos) != current.getColor()) {
                     this.tileCount.put(dir,0);
                 } else {
-                    this.tileCount.put(dir,opp_count);
+                    this.tileCount.put(dir,oppCount);
                     this.valid = true;
                 }
             }
@@ -126,12 +126,12 @@ public class Board {
         this.active = true;
         this.board = new ArrayList<>();
         this.validMoves = new ArrayList<>();
-        ArrayList<TileType> empty_row = new ArrayList<>();
+        ArrayList<TileType> emptyRow = new ArrayList<>();
         for (int x = 0; x < this.width; x++) {
-            empty_row.add(TileType.EMPTY);
+            emptyRow.add(TileType.EMPTY);
         }
         for (int y = 0; y < this.height; y++) {
-            this.board.add(empty_row);
+            this.board.add(emptyRow);
         }
         setTile(TileType.LIGHT, 3, 3);
         setTile(TileType.LIGHT, 4, 4);
@@ -164,16 +164,16 @@ public class Board {
     }
 
     private void setTile(TileType newTileType, Coordinate pos) {
-        this.board.get(pos.x).set(pos.y, newTileType);
+        this.board.get(pos.getX()).set(pos.getY(), newTileType);
     }
 
     private TileType getTile(Coordinate move) {
         if (!isValidPos(move)) return TileType.EMPTY;
-        return this.board.get(move.x).get(move.y);
+        return this.board.get(move.getX()).get(move.getY());
     }
 
     private boolean isValidPos(Coordinate pos) {
-        return pos.x < width && pos.y < height;
+        return pos.getX() < width && pos.getY() < height;
     }
 
     private void getValidMoves() {

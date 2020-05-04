@@ -3,9 +3,9 @@ package gamelogic;
 public class Player {
     private String name;
     private TileType color;
-    private Integer timer;
+    private int timer;
 
-    public Player(String name, TileType color, Integer timer) {
+    public Player(String name, TileType color, int timer) {
         this.name = name;
         this.color = color;
         this.timer = timer;
