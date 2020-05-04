@@ -4,32 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
- * Ez az enumeráció a tábla egyes mezőinek állapotát, és a játékosok által használt korongok színét is jelzi.
- * @author borszag
- */
-enum TileType {
-    EMPTY,
-    DARK,
-    LIGHT
-}
-
-/**
- * Ez az enumeráció egy mező szomszédainak égtájak szerinti megadásához szükséges. A tábla (0,0) mezője a bal felső
- * sarokban van.
- * @author borszag
- */
-enum Direction {
-    N,
-    NE,
-    E,
-    SE,
-    S,
-    SW,
-    W,
-    NW
-}
-
-/**
  * Ez az osztály tartalmazza a játéktábla belső állapotát.
  * @author borszag
  */
