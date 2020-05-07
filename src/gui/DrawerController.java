@@ -1,5 +1,6 @@
 package gui;
 
+import gamelogic.Coordinate;
 import gamelogic.GameLoop;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,11 +20,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+
+
 public class DrawerController {
 
     GameType gameType;
     Scene MenuScene;
     double singleTimer;
+    GameLoop gameLoop;
 
     @FXML
     private Canvas canvas_sb;
@@ -84,6 +88,7 @@ public class DrawerController {
 
     }
     Canvas getCanvas(){
+
         return this.canvas_sb;
     }
 
@@ -91,6 +96,7 @@ public class DrawerController {
 
     public void startSingleGame() {
         GameLoop game = new GameLoop(this.canvas_sb);
+        this.gameLoop = game;
         Thread th = new Thread(game);
         th.start();
 
@@ -110,4 +116,20 @@ public class DrawerController {
         System.out.println("Start Multi Game DC");
        // System.out.println("The name is: "+ Name + "\n" + "The IP Address is: " + IPAddr);
     }
+
+    @FXML
+    void canvasClicked(MouseEvent event) {
+        double boardHeight = this.gameLoop.getBoard().getHeight();
+        double boardWidth = this.gameLoop.getBoard().getWidth();
+        double x_pos = event.getX();
+        double y_pos = event.getY();
+        double rectangleWidth = this.canvas_sb.getWidth()/boardWidth; // getter -el kell lekérdezni a board méretét ( 8-as)
+        double rectangleHeight = (this.canvas_sb.getHeight())/boardHeight-1;
+        int x = (int)(x_pos/rectangleWidth);
+        int y = (int)(y_pos/rectangleHeight);
+        Coordinate cor = new Coordinate(x,y);
+        System.out.println("x koordináta: " + String.valueOf(cor.getX()) + " y koordináta:" +String.valueOf(cor.getY()));
+    }
+
+
 }

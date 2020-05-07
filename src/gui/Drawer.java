@@ -17,7 +17,7 @@ import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
 
 public class Drawer extends AnimationTimer {
-    private static final int boardSize = 8;
+    private static final int boardSize = 8; //ez szar majd getter kell
     // Ha vége a játéknak ezt állítjuk be
     private boolean stop = false;
 
@@ -48,8 +48,8 @@ public class Drawer extends AnimationTimer {
 
     private void drawBoard() {
 
-            double rectangleWidth = this.canvas.getWidth()/boardSize;
-            double rectangleHeight = (this.canvas.getHeight())/boardSize-1;
+            double rectangleWidth = this.canvas.getWidth()/this.board.getWidth();
+            double rectangleHeight = (this.canvas.getHeight())/this.board.getHeight()-1;
 
        GraphicsContext gc = this.canvas.getGraphicsContext2D();
 
@@ -60,8 +60,8 @@ public class Drawer extends AnimationTimer {
         gc.setFill(fill);
         gc.setStroke(stroke);
     //board lenullázása
-        for(int i =0; i < boardSize ; i ++){ //y
-           for(int j = 0 ; j< boardSize;j++) { //x
+        for(int i =0; i < this.board.getHeight() ; i ++){ //y
+           for(int j = 0 ; j< this.board.getWidth();j++) { //x
                gc.fillRect(j*rectangleWidth , i*rectangleHeight , rectangleWidth, rectangleHeight);
                gc.strokeRect(j*rectangleWidth , i*rectangleHeight , rectangleWidth, rectangleHeight);
 
@@ -76,8 +76,8 @@ public class Drawer extends AnimationTimer {
 
         gc.setLineWidth(2);
         gc.setStroke(BLACK);
-        for(int i =0; i < boardSize ; i ++) { //y
-            for (int j = 0; j < boardSize; j++) { //x
+        for(int i =0; i < this.board.getHeight() ; i ++) { //y
+            for (int j = 0; j < this.board.getWidth(); j++) { //x
                 this.board.getTile(new Coordinate(j,i));
                 if(this.board.getTile(new Coordinate(j,i)) == DARK){
                     gc.setFill(BLACK);

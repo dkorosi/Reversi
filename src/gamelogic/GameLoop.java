@@ -16,6 +16,14 @@ public class GameLoop implements Runnable {
         this.drawer = new Drawer(canvas, board);
     }
 
+    public Drawer getDrawer() {
+        return drawer;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
     @Override
     public void run() {
         boolean stop = false;

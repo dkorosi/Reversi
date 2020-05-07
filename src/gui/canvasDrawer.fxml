@@ -21,7 +21,7 @@
         <items>
           <AnchorPane maxHeight="510.0" maxWidth="510.0" minHeight="510.0" minWidth="510.0" prefHeight="510.0" prefWidth="510.0">
                <children>
-                  <Canvas fx:id="canvas_sb" height="510.0" width="510.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Canvas fx:id="canvas_sb" height="510.0" onMouseClicked="#canvasClicked" width="510.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="511.0" prefWidth="249.0">
