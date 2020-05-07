@@ -100,11 +100,11 @@ public class Board {
         this.active = true;
         this.board = new ArrayList<>();
         this.validMoves = new ArrayList<>();
-        ArrayList<TileType> emptyRow = new ArrayList<>();
-        for (int x = 0; x < this.width; x++) {
-            emptyRow.add(TileType.EMPTY);
-        }
         for (int y = 0; y < this.height; y++) {
+            ArrayList<TileType> emptyRow = new ArrayList<>();
+            for (int x = 0; x < this.width; x++) {
+                emptyRow.add(TileType.EMPTY);
+            }
             this.board.add(emptyRow);
         }
         setTile(TileType.LIGHT, 3, 3);
@@ -224,4 +224,3 @@ public class Board {
         return true;
     }
 }
-
