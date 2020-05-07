@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class DrawerController {
     private Canvas canvas_sb;
 
     @FXML
-    private TextField timerCountDown;
+    private Text timerCountDown;
 
     @FXML
     void changeSceneToMenu(ActionEvent event) throws IOException{
@@ -47,7 +48,23 @@ public class DrawerController {
         this.MenuScene = Menu;
         this.gameType = type;
         this.singleTimer = singleTimer;
-        this.timerCountDown.setText(String.valueOf(this.singleTimer));
+
+        int min = (int)(this.singleTimer);
+        int sec = (int)((this.singleTimer-min)*60);
+        String plus_sec = "";
+        String plus_min = "";
+        if(sec < 10)
+            plus_sec = "0";
+        else
+            plus_sec = "";
+
+        if(min < 10)
+            plus_min = "0";
+        else
+            plus_min = "";
+
+        String timer_string = plus_min + String.valueOf(min) + ":" + plus_sec +  String.valueOf(sec);
+        this.timerCountDown.setText(timer_string);
 
     }
     void startDrawerController(){

@@ -53,18 +53,12 @@ public class Drawer extends AnimationTimer {
 
        GraphicsContext gc = this.canvas.getGraphicsContext2D();
 
-        //Rectangle rectangle = new Rectangle(0,0,rectangleWidth,rectangleHeight);
-        //rectangle.setHeight(rectangleHeight);
-        //rectangle.setWidth(rectangleWidth);
-       // rectangle.setFill(Color.PALETURQUOISE);
-        //rectangle.setStrokeWidth(5); // 	PALETURQUOISE  MEDIUMTURQUOISE
-        //rectangle.setStrokeType(StrokeType.INSIDE);
-        //rectangle.setStroke(Color.TEAL);
+
         Color fill = Color.rgb(108,195,172);
         Color stroke = Color.rgb(12,74,60);
         gc.setLineWidth(3);
-        gc.setFill(fill);//Color.MEDIUMTURQUOISE);
-        gc.setStroke(stroke);//Color.TEAL);
+        gc.setFill(fill);
+        gc.setStroke(stroke);
     //board lenullázása
         for(int i =0; i < boardSize ; i ++){ //y
            for(int j = 0 ; j< boardSize;j++) { //x

@@ -6,7 +6,6 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -14,6 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="510.0" maxWidth="700.0" minHeight="510.0" minWidth="700.0" prefHeight="510.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DrawerController">
    <children>
@@ -45,20 +45,17 @@
                                     <Font name="Arial Bold" size="16.0" />
                                  </font>
                                  <GridPane.margin>
-                                    <Insets left="24.0" />
+                                    <Insets left="30.0" />
                                  </GridPane.margin>
                               </Label>
-                              <TextField fx:id="timerCountDown" alignment="CENTER" editable="false" text="12:00" GridPane.columnIndex="1">
-                                 <opaqueInsets>
-                                    <Insets />
-                                 </opaqueInsets>
+                              <Text fx:id="timerCountDown" strokeType="OUTSIDE" strokeWidth="0.0" text="12:00" textAlignment="CENTER" translateX="-5.0" wrappingWidth="60.89831519126892" GridPane.columnIndex="1">
                                  <font>
-                                    <Font name="Arial Bold" size="16.0" />
+                                    <Font name="Arial Bold" size="20.0" />
                                  </font>
                                  <GridPane.margin>
-                                    <Insets right="24.0" />
+                                    <Insets right="40.0" />
                                  </GridPane.margin>
-                              </TextField>
+                              </Text>
                            </children>
                         </GridPane>
                      </children>
@@ -97,5 +94,6 @@
             </AnchorPane>
         </items>
       </SplitPane>
+      <Text layoutX="631.0" layoutY="-72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
    </children>
 </AnchorPane>
