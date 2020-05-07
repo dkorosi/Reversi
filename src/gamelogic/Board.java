@@ -107,10 +107,10 @@ public class Board {
             }
             this.board.add(emptyRow);
         }
-        setTile(TileType.LIGHT, 3, 3);
-        setTile(TileType.LIGHT, 4, 4);
-        setTile(TileType.DARK,  3, 4);
-        setTile(TileType.DARK,  4, 3);
+        setTile(TileType.LIGHT, this.width/2-1, this.height/2-1);
+        setTile(TileType.LIGHT, this.width/2, this.height/2);
+        setTile(TileType.DARK,  this.width/2-1, this.height/2);
+        setTile(TileType.DARK,  this.width/2, this.height/2-1);
         if (TileType.DARK == one.getColor() && TileType.LIGHT == two.getColor()) {
             current = one;
             opponent = two;
@@ -224,3 +224,4 @@ public class Board {
         return true;
     }
 }
+
