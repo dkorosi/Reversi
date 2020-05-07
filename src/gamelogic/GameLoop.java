@@ -11,7 +11,7 @@ public class GameLoop implements Runnable {
     public GameLoop(Canvas canvas) {
         Player one = new Player("One", TileType.LIGHT, 0);
         Player two = new Player("Two", TileType.DARK, 0);
-        Board board = new Board(one, two);
+        this.board = new Board(one, two);
 
         this.drawer = new Drawer(canvas, board);
     }

@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static gui.GameType.*;
+
 public class GuiController {
     private Stage stage;
     @FXML
@@ -33,12 +35,9 @@ public class GuiController {
 
     @FXML
     private TextField multiIPAddrText;
-    //second scene
-    @FXML
-    private Canvas canvas;
-    @FXML
-    private TextField timerCountDown;
 
+
+    DrawerController drawerController;
 
     public ToggleGroup getStartingColorTG() {
 
@@ -51,24 +50,22 @@ public class GuiController {
 
     @FXML
     void startSingleGame(ActionEvent event) throws IOException {
-        GameLoop game = new GameLoop(canvas);
-        Thread th = new Thread(game);
-        th.start();
-        changeSceneToCanvas(event);
+        changeSceneToCanvas(event,SINGLE,this.timerSliderSingle.getValue()); //Előbb change scene aztán init
         System.out.println("Start Single GAME");
     }
     @FXML
-    void startLocalGame(ActionEvent event) {
+    void startLocalGame(ActionEvent event) throws IOException{
         String Name =   getMultiNameText();
-        GameLoop game = new GameLoop(canvas);
+        changeSceneToCanvas(event, LOCAL,this.timerSliderSingle.getValue()); //Előbb change scene aztán init
         System.out.println("Start Local Game");
         System.out.println("The name is:"+ Name);
     }
     @FXML
-    void startOnlineGame(ActionEvent event) {
+    void startOnlineGame(ActionEvent event) throws IOException{
         String IPAddr = getMultiIPAddrText();
         String Name =   getMultiNameText();
-        GameLoop game = new GameLoop(canvas);
+        changeSceneToCanvas(event, ONLINE,this.timerSliderSingle.getValue()); //Előbb change scene aztán init
+        //GameLoop game = new GameLoop(canvas_sb);
         System.out.println("Start Multi Game");
         System.out.println("The name is: "+ Name + "\n" + "The IP Address is: " + IPAddr);
     }
@@ -93,14 +90,19 @@ public class GuiController {
         return multiIPAddrText.getText();
     }
 
-    public void changeSceneToCanvas(ActionEvent event) throws IOException {
-        Parent canvasDrawerParent = FXMLLoader.load(getClass().getResource("canvasDrawer.fxml"));
+    public void changeSceneToCanvas(ActionEvent event,GameType gameType,double singleTimer) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("canvasDrawer.fxml"));
+        Parent canvasDrawerParent =loader.load();
 
         Scene canvasDrawerScene = new Scene(canvasDrawerParent, 700, 510);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        this.drawerController = loader.getController();
 
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        drawerController.initDrawerController(window.getScene(),gameType,singleTimer); //passing menu scene so drawer controller can change back
         window.setScene((canvasDrawerScene));
         window.show();
+        drawerController.startDrawerController();
 
     }
     public void changeSceneToMenu(ActionEvent event) throws IOException {
