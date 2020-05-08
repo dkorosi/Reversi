@@ -1,5 +1,7 @@
 package gamelogic;
 
+import javafx.geometry.Pos;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 
@@ -21,16 +23,16 @@ public class Board {
      */
     private boolean active;
     /**
-     * Az aktuális körben az ellenfél játékos.
+     * Az aktuális körben az ellenfél játékos szín.
      */
-    private Player opponent;
+    private TileType opponent;
     /**
      * Az aktuális körben lépést végrehajtó játékos.
      */
-    private Player current;
+    private TileType current;
+
     private ArrayList<ArrayList<TileType>> board;
     private ArrayList<PossibleMove> validMoves;
-
     /**
      * A lépési szabályokat ellenőrző osztály.
      * @author borszag
@@ -72,9 +74,9 @@ public class Board {
                 do {
                     oppCount++;
                     pos.step(dir);
-                } while (isValidPos(pos) && getTile(pos) == opponent.getColor());
+                } while (isValidPos(pos) && getTile(pos) == opponent);
 
-                if (0 >= oppCount || !isValidPos(pos) || getTile(pos) != current.getColor()) {
+                if (0 >= oppCount || !isValidPos(pos) || getTile(pos) != current) {
                     this.tileCount.put(dir,0);
                 } else {
                     this.tileCount.put(dir,oppCount);
@@ -91,13 +93,15 @@ public class Board {
     /**
      * Inicializálja a táblát, ami áll a kezdő korongok elhelyezéséből, és a sötét korongokkal játszó játékos
      * kiválasztásából, ezzel eldöntve, hogy kié a kezdő lépés. Meghatározza továbbá az érvényes első lépéseket is.
-     * @param one Az első játékos.
-     * @param two Az második játékos.
+     * @param width A játéktábla szélessége. (Páros szám)
+     * @param height A játéktábla magassága (Páratlan szám)
      */
-    public Board(Player one, Player two) {
-        this.width = 8;
-        this.height = 8;
+    public Board(int width, int height) {
+        this.width = width;
+        this.height = height;
         this.active = true;
+        this.current = TileType.DARK;
+        this.opponent = TileType.LIGHT;
         this.board = new ArrayList<>();
         this.validMoves = new ArrayList<>();
         for (int y = 0; y < this.height; y++) {
@@ -111,13 +115,7 @@ public class Board {
         setTile(TileType.LIGHT, this.width/2, this.height/2);
         setTile(TileType.DARK,  this.width/2-1, this.height/2);
         setTile(TileType.DARK,  this.width/2, this.height/2-1);
-        if (TileType.DARK == one.getColor() && TileType.LIGHT == two.getColor()) {
-            current = one;
-            opponent = two;
-        } else if (TileType.LIGHT == one.getColor() && TileType.DARK == two.getColor()) {
-            current = two;
-            opponent = one;
-        } // TODO exception in else branch: Players have the same color.
+
         getValidMoves();
     }
 
@@ -127,10 +125,23 @@ public class Board {
      */
     public ArrayList<Coordinate> getValidCoordinates() {
         ArrayList<Coordinate> validCoordinates = new ArrayList<>();
-        for (PossibleMove move : validMoves) {
-            validCoordinates.add(move.pos);
+        for (PossibleMove move : this.validMoves) {
+            if (move.isValid()) {
+                validCoordinates.add(move.pos);
+            }
         }
         return validCoordinates;
+    }
+
+    public boolean isValidMove(Coordinate pos) {
+        boolean valid = false;
+        for (PossibleMove move : this.validMoves) {
+            if (pos.equals(move.pos)) {
+                valid = true;
+                break;
+            }
+        }
+        return valid;
     }
 
     public ArrayList<ArrayList<TileType>> getBoard() {
@@ -179,35 +190,33 @@ public class Board {
         return height;
     }
 
-    public Player getOpponent() {
+    public TileType getOpponent() {
         return opponent;
     }
 
-    public Player getCurrent() {
+    public TileType getCurrent() {
         return current;
     }
 
-    // Ennek a függvénynek célszerűen void a visszatérési értéke, most azt jelzi, hogy az aktív játékos személye
-    // változott-e. Ha igen, akkor megtörtént a tábla frissítése, a következő lépést a másik játékos teszi meg.
-    // Hamis érték esetén vagy rossz volt a lépés, vagy a következő játékos nem tehet érvényes lépést. Hogy melyik
-    // történt az eldönthető a getValidCoordinates segítségével (ha nem változott az előző lépéshez képest, akkor rossz
-    // volt a lépés). Érdemes minden lépés után meghívni as isActive függvényt, ha hamis, akkor vége a játéknak.
-    public boolean makeMoveAt(Coordinate pos) {
+    public void makeMoveAt(TileType player, Coordinate pos) {
+        if (player != current) {
+            return;
+        }
+
         PossibleMove move = new PossibleMove(pos);
         if (!move.isValid()) {
-            return false;
+            return;
         }
 
         for (Direction dir : Direction.values()) {
             Coordinate flipPos = new Coordinate(move.pos);
             for (int i = 0; i <= move.tileCount.get(dir); i++) {
-                setTile(current.getColor(), flipPos);
+                setTile(current, flipPos);
                 flipPos.step(dir);
             }
         }
 
-        //TODO Implement game termination correctly.
-        Player temp = current;
+        TileType temp = current;
         current = opponent;
         opponent = temp;
         getValidMoves();
@@ -219,9 +228,7 @@ public class Board {
             if (0 == validMoves.size()) {
                 active = false;
             }
-            return false;
         }
-        return true;
     }
 }
 

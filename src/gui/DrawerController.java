@@ -128,6 +128,7 @@ public class DrawerController {
         int x = (int)(x_pos/rectangleWidth);
         int y = (int)(y_pos/rectangleHeight);
         Coordinate cor = new Coordinate(x,y);
+        gameLoop.move(cor);
         System.out.println("x koordináta: " + String.valueOf(cor.getX()) + " y koordináta:" +String.valueOf(cor.getY()));
     }
 
