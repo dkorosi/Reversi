@@ -106,7 +106,7 @@
                                                             <Font name="Arial Bold" size="16.0" />
                                                          </font>
                                                       </Label>
-                                                      <Slider fx:id="timerSliderSingle" blockIncrement="5.0" majorTickUnit="20.0" max="60.0" minorTickCount="5" onMouseClicked="#getTimerSliderSingleVal" prefHeight="38.0" prefWidth="270.0" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                      <Slider fx:id="timerSliderSingle" blockIncrement="5.0" majorTickUnit="20.0" max="60.0" minorTickCount="5" onMouseClicked="#getTimerSliderSingleVal" prefHeight="38.0" prefWidth="270.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                          <GridPane.margin>
                                                             <Insets left="5.0" right="5.0" />
                                                          </GridPane.margin>

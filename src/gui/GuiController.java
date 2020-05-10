@@ -1,6 +1,7 @@
 package gui;
 
 import gamelogic.GameLoop;
+import javafx.beans.property.BooleanPropertyBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -97,12 +99,29 @@ public class GuiController {
 
         Scene canvasDrawerScene = new Scene(canvasDrawerParent, 700, 510);
         this.drawerController = loader.getController();
+        //ha a fekete ki van jelölve
+        boolean b = startingColorTG.getToggles().get(1).isSelected();
+
+        int diff = 0;
+        if(difficultyTG.getToggles().get(0).isSelected())
+            diff = 0;
+        else if (difficultyTG.getToggles().get(1).isSelected())
+            diff = 1;
+        else
+            diff = 2;
+
 
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        drawerController.initDrawerController(window.getScene(),gameType,singleTimer); //passing menu scene so drawer controller can change back
+        if(gameType == SINGLE)
+            drawerController.initDrawerControllerSingle(window.getScene(),gameType,singleTimer,b,diff); //passing menu scene so drawer controller can change back
+        else if(gameType == LOCAL)
+            drawerController.initDrawerControllerLocal(window.getScene(),gameType,singleTimer,b); //passing menu scene so drawer controller can change back
+        else
+            drawerController.initDrawerControllerOnline(window.getScene(), gameType, singleTimer, b,getMultiIPAddrText(),getMultiNameText()); //passing menu scene so drawer controller can change back
+
         window.setScene((canvasDrawerScene));
         window.show();
-        drawerController.startDrawerController();
+
 
     }
     public void changeSceneToMenu(ActionEvent event) throws IOException {

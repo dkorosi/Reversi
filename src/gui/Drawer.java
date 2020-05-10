@@ -5,11 +5,16 @@ import gamelogic.Coordinate;
 import gamelogic.TileType;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+
+import java.io.IOException;
 
 import static gamelogic.TileType.DARK;
 import static gamelogic.TileType.LIGHT;
@@ -17,19 +22,18 @@ import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
 
 public class Drawer extends AnimationTimer {
-    private static final int boardSize = 8; //ez szar majd getter kell
+
+
     // Ha vége a játéknak ezt állítjuk be
     private boolean stop = false;
-
     private Canvas canvas;
     private Board board;
-
+    private DrawerController controller;
 
 
     public Drawer(Canvas canvas, Board board) {
         this.canvas = canvas;
         this.board = board;
-
     }
 
     public void setCanvas(Canvas canvas_new){
@@ -92,6 +96,18 @@ public class Drawer extends AnimationTimer {
 
 
             }
+        }
+         fill = Color.rgb(115,165,195);
+         stroke = Color.rgb(12,74,60);
+        gc.setLineWidth(3);
+        gc.setFill(fill);
+        gc.setStroke(stroke);
+        for(int i = 0; i <this.board.getValidCoordinates().size();i++){
+
+
+            Coordinate cor = board.getValidCoordinates().get(i);
+            gc.fillRect(cor.getX()*rectangleWidth , cor.getY()*rectangleHeight , rectangleWidth, rectangleHeight);
+            gc.strokeRect(cor.getX()*rectangleWidth , cor.getY()*rectangleHeight , rectangleWidth, rectangleHeight);
         }
 
 
