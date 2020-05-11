@@ -30,6 +30,9 @@ public class GuiController {
     private Slider timerSliderMulti;
     @FXML
     private ToggleGroup startingColorTG;
+
+    @FXML
+    private ToggleGroup startingColorTGMulti;
     @FXML
     private ToggleGroup difficultyTG;
     @FXML
@@ -58,7 +61,7 @@ public class GuiController {
     @FXML
     void startLocalGame(ActionEvent event) throws IOException{
         String Name =   getMultiNameText();
-        changeSceneToCanvas(event, LOCAL,this.timerSliderSingle.getValue()); //Előbb change scene aztán init
+        changeSceneToCanvas(event, LOCAL,this.timerSliderMulti.getValue()); //Előbb change scene aztán init
         System.out.println("Start Local Game");
         System.out.println("The name is:"+ Name);
     }
@@ -66,7 +69,7 @@ public class GuiController {
     void startOnlineGame(ActionEvent event) throws IOException{
         String IPAddr = getMultiIPAddrText();
         String Name =   getMultiNameText();
-        changeSceneToCanvas(event, ONLINE,this.timerSliderSingle.getValue()); //Előbb change scene aztán init
+        changeSceneToCanvas(event, ONLINE,this.timerSliderMulti.getValue()); //Előbb change scene aztán init
         //GameLoop game = new GameLoop(canvas_sb);
         System.out.println("Start Multi Game");
         System.out.println("The name is: "+ Name + "\n" + "The IP Address is: " + IPAddr);
@@ -92,7 +95,7 @@ public class GuiController {
         return multiIPAddrText.getText();
     }
 
-    public void changeSceneToCanvas(ActionEvent event,GameType gameType,double singleTimer) throws IOException {
+    public void changeSceneToCanvas(ActionEvent event,GameType gameType,double Timer) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("canvasDrawer.fxml"));
         Parent canvasDrawerParent =loader.load();
@@ -110,14 +113,16 @@ public class GuiController {
         else
             diff = 2;
 
+        boolean b_mult = startingColorTGMulti.getToggles().get(1).isSelected();
+
 
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         if(gameType == SINGLE)
-            drawerController.initDrawerControllerSingle(window.getScene(),gameType,singleTimer,b,diff); //passing menu scene so drawer controller can change back
+            drawerController.initDrawerControllerSingle(window.getScene(),gameType,Timer,b,diff); //passing menu scene so drawer controller can change back
         else if(gameType == LOCAL)
-            drawerController.initDrawerControllerLocal(window.getScene(),gameType,singleTimer,b); //passing menu scene so drawer controller can change back
+            drawerController.initDrawerControllerLocal(window.getScene(),gameType,Timer,b_mult); //passing menu scene so drawer controller can change back
         else
-            drawerController.initDrawerControllerOnline(window.getScene(), gameType, singleTimer, b,getMultiIPAddrText(),getMultiNameText()); //passing menu scene so drawer controller can change back
+            drawerController.initDrawerControllerOnline(window.getScene(), gameType, Timer, b_mult,getMultiIPAddrText(),getMultiNameText()); //passing menu scene so drawer controller can change back
 
         window.setScene((canvasDrawerScene));
         window.show();

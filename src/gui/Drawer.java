@@ -40,12 +40,15 @@ public class Drawer extends AnimationTimer {
         this.canvas =  canvas_new;
     }
 
+    public void setController(DrawerController controller) {
+        this.controller = controller;
+    }
 
     // Minden képfrissítésnél lefut
     @Override
     public void handle(long l) {
         drawBoard();
-
+        this.controller.refreshTimer();
         if (stop)
             this.stop();
     }

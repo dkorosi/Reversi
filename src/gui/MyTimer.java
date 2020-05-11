@@ -20,17 +20,21 @@ boolean stop;
 
     @Override
     public void run() {
+        stop = false;
 
-
-        while (time >=0) {
-            System.out.println(String.valueOf(time) + " seconds remaining");
-            if (stop ||time == 0) {
+        while (true) {
+           // System.out.println(time);
+            if (stop) {
                 break;
             }
 
             try {
-                time--;
-                Thread.sleep(1000L);    // 1000L = 1000ms = 1 second
+                if(time != 0) {
+                    time--;
+                    Thread.sleep(1000L);    // 1000L = 1000ms = 1 second
+                }
+                else
+                    time = this.time;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -179,10 +179,10 @@
                                                          <children>
                                                             <RadioButton mnemonicParsing="false" selected="true" text="White">
                                                                <toggleGroup>
-                                                                  <ToggleGroup fx:id="startingColorTG1" />
+                                                                  <ToggleGroup fx:id="startingColorTGMulti" />
                                                                </toggleGroup>
                                                             </RadioButton>
-                                                            <RadioButton mnemonicParsing="false" text="Black" toggleGroup="$startingColorTG1" />
+                                                            <RadioButton mnemonicParsing="false" text="Black" toggleGroup="$startingColorTGMulti" />
                                                          </children>
                                                       </HBox>
                                                       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="26.0" prefWidth="126.0" text="Name:" textAlignment="CENTER" GridPane.rowIndex="1">
@@ -195,7 +195,7 @@
                                                             <Font name="Arial Bold" size="16.0" />
                                                          </font>
                                                       </Label>
-                                                      <Slider fx:id="timerSliderMulti" blockIncrement="5.0" majorTickUnit="20.0" max="60.0" minorTickCount="5" onMouseClicked="#getTimerSliderMultiVal" prefHeight="38.0" prefWidth="270.0" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                      <Slider fx:id="timerSliderMulti" blockIncrement="5.0" majorTickUnit="20.0" max="60.0" minorTickCount="5" onMouseClicked="#getTimerSliderMultiVal" prefHeight="38.0" prefWidth="270.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                          <GridPane.margin>
                                                             <Insets left="5.0" right="5.0" />
                                                          </GridPane.margin>

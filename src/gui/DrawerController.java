@@ -49,10 +49,11 @@ public class DrawerController {
 
 
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        if(gameLoop.getTimerVal() != 0)
+
         this.gameLoop.stopTimer();
         window.setScene((this.MenuScene));
         window.show();
+
 
     }
 
@@ -67,6 +68,7 @@ public class DrawerController {
 
         GameLoop game = new GameLoop(this.canvas_sb,difficulty,black,whole);
         this.gameLoop = game;
+        game.getDrawer().setController(this);
         Thread th = new Thread(game);
         th.start();
         nameText.setText(gameLoop.getCurrentPlayer().getName());
@@ -110,6 +112,7 @@ public class DrawerController {
         GameLoop game = new GameLoop(this.canvas_sb,black,whole);
         this.gameLoop = game;
         Thread th = new Thread(game);
+        game.getDrawer().setController(this);
         th.start();
         nameText.setText(gameLoop.getCurrentPlayer().getName());
         System.out.println("Start Single GAME DC");
@@ -130,6 +133,7 @@ public class DrawerController {
 
         GameLoop game = new GameLoop(this.canvas_sb,black,ip,name,whole);
         this.gameLoop = game;
+        game.getDrawer().setController(this);
         Thread th = new Thread(game);
         th.start();
         nameText.setText(gameLoop.getCurrentPlayer().getName());
