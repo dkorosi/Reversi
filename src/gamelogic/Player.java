@@ -1,8 +1,6 @@
 package gamelogic;
 
-/**
- *
- */
+
 public abstract class Player {
     private String name;
     private TileType color;

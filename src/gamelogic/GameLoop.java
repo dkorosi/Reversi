@@ -1,7 +1,7 @@
 package gamelogic;
 
 import gui.Drawer;
-import gui.MyTimer;
+import gui.Timer;
 import javafx.scene.canvas.Canvas;
 
 public class GameLoop implements Runnable {
@@ -10,11 +10,11 @@ public class GameLoop implements Runnable {
     private Board board;
     private Player currentPlayer;
     private Player opponentPlayer;
-    private MyTimer timer;
+    private Timer timer;
 
-    public GameLoop(Canvas canvas, int difficulty, boolean black,int time) { //0 -1 -2 a nehézség, melyik színel akar kezdeni
+    public GameLoop(Canvas canvas, int difficulty, boolean black, int time) { // 0 -1 -2 a nehézség, melyik színel akar kezdeni
         this.board = new Board(8, 8);
-        Player one = new LocalPlayer("Black",this.board , TileType.DARK, 0);
+        Player one = new LocalPlayer("Black", this.board, TileType.DARK, 0);
         Player two = new LocalPlayer("White", this.board, TileType.LIGHT, 0);
 
         currentPlayer = one;
@@ -22,49 +22,42 @@ public class GameLoop implements Runnable {
         this.drawer = new Drawer(canvas, board);
 
 
+        this.timer = new Timer(time);
 
-            this.timer = new MyTimer(time);
-
-            Thread timer_th = new Thread(this.timer);
-            timer_th.start();
+        Thread timerTh = new Thread(this.timer);
+        timerTh.start();
 
     }
 
-    public GameLoop(Canvas canvas,boolean black,int time) { //Lokális játékokhoz
+    public GameLoop(Canvas canvas, boolean black, int time) { // Lokális játékokhoz
         this.board = new Board(8, 8);
-        Player one = new LocalPlayer("Black",this.board , TileType.DARK, 0);
+        Player one = new LocalPlayer("Black", this.board, TileType.DARK, 0);
         Player two = new LocalPlayer("White", this.board, TileType.LIGHT, 0);
 
         currentPlayer = one;
         opponentPlayer = two;
         this.drawer = new Drawer(canvas, board);
 
+        this.timer = new Timer(time);
 
-
-            this.timer = new MyTimer(time);
-
-            Thread timer_th = new Thread(this.timer);
-            timer_th.start();
-
+        Thread timer_th = new Thread(this.timer);
+        timer_th.start();
     }
 
 
-    public GameLoop(Canvas canvas,boolean black, String name,String IP,int time) { //Online
+    public GameLoop(Canvas canvas, boolean black, String name, String IP, int time) { // Online
         this.board = new Board(8, 8);
-        Player one = new LocalPlayer("Black",this.board , TileType.DARK, 0);
+        Player one = new LocalPlayer("Black", this.board, TileType.DARK, 0);
         Player two = new LocalPlayer("White", this.board, TileType.LIGHT, 0);
 
         currentPlayer = one;
         opponentPlayer = two;
         this.drawer = new Drawer(canvas, board);
 
+        this.timer = new Timer(time);
 
-
-            this.timer = new MyTimer(time);
-
-            Thread timer_th = new Thread(this.timer);
-            timer_th.start();
-
+        Thread timer_th = new Thread(this.timer);
+        timer_th.start();
 
     }
 
@@ -91,7 +84,6 @@ public class GameLoop implements Runnable {
                 break;
             }
 
-
             stop = !board.isActive();
 
             // Játéklogika implementációja, függvényeket hívogatunk, melyek visszatérési értékeiből tudjuk,
@@ -100,7 +92,6 @@ public class GameLoop implements Runnable {
         }
     }
 
-
     public int getTimerVal() {
         return timer.getTime();
     }
@@ -108,10 +99,10 @@ public class GameLoop implements Runnable {
     public void setTimerVal(int time) {
         this.timer.setTime(time);
     }
+
     public void stopTimer() {
         this.timer.stop();
     }
-
 
     public void move(Coordinate pos) {
         Player temp;

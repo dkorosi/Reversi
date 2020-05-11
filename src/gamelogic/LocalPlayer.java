@@ -13,8 +13,8 @@ public class LocalPlayer extends Player {
         return nextMove;
     }
 
-    public void setNextMove(Coordinate nextStep) {
-        this.nextMove = nextStep;
+    public void setNextMove(Coordinate nextMove) {
+        this.nextMove = nextMove;
     }
 
     @Override

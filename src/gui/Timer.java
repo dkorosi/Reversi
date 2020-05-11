@@ -1,13 +1,12 @@
 package gui;
 
-public class MyTimer implements java.lang.Runnable{
-int time;
-boolean stop;
+public class Timer implements java.lang.Runnable {
+    private int time;
+    private boolean stop;
 
-    public MyTimer(int d)
-    {
-    this.stop = false;
-    this.time = d;
+    public Timer(int time) {
+        this.stop = false;
+        this.time = time;
     }
 
     public int getTime() {
@@ -23,31 +22,27 @@ boolean stop;
         stop = false;
 
         while (true) {
-           // System.out.println(time);
+            // System.out.println(time);
             if (stop) {
-
                 break;
             }
 
             try {
-                if(time != 0) {
+                if (0 != time) {
                     time--;
                     Thread.sleep(1000L);    // 1000L = 1000ms = 1 second
                 }
-                else
-                    time = this.time;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
 
-
         }
     }
-    public void stop(){
-    this.stop = true;
-    }
 
+    public void stop() {
+        this.stop = true;
+    }
 
 }
 

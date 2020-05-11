@@ -1,9 +1,8 @@
 package gamelogic;
 
-import java.util.Objects;
-
 /**
  * A lépések megadásához szükséges koordinátákat megvalósító osztály.
+ *
  * @author borszag
  */
 public class Coordinate {
@@ -13,11 +12,6 @@ public class Coordinate {
     public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    public Coordinate(Coordinate pos) {
-        this.x = pos.x;
-        this.y = pos.y;
     }
 
     public void setX(int x) {
@@ -36,22 +30,9 @@ public class Coordinate {
         return y;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Coordinate that = (Coordinate) o;
-        return x == that.x &&
-                y == that.y;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-
     /**
      * A megadott koordinátát egy szomszédos mezőre léptető tagfüggvény.
+     *
      * @param dir A lépés iránya
      */
     public void step(Direction dir) {

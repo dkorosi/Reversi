@@ -1,12 +1,11 @@
 package gamelogic;
 
-import javafx.geometry.Pos;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
  * Ez az osztály tartalmazza a játéktábla belső állapotát.
+ *
  * @author borszag
  */
 public class Board {
@@ -33,8 +32,10 @@ public class Board {
 
     private ArrayList<ArrayList<TileType>> board;
     private ArrayList<PossibleMove> validMoves;
+
     /**
      * A lépési szabályokat ellenőrző osztály.
+     *
      * @author borszag
      */
     private class PossibleMove {
@@ -49,12 +50,12 @@ public class Board {
         private EnumMap<Direction, Integer> tileCount = new EnumMap<>(Direction.class);
 
         public PossibleMove(int x, int y) {
-            this.pos = new Coordinate(x,y);
+            this.pos = new Coordinate(x, y);
             this.countReversible();
         }
 
         public PossibleMove(Coordinate pos) {
-            this.pos = new Coordinate(pos);
+            this.pos = pos;
             this.countReversible();
         }
 
@@ -64,12 +65,11 @@ public class Board {
          */
         private void countReversible() {
             this.valid = false;
-            if (!isValidPos(this.pos) || TileType.EMPTY != getTile(this.pos)) {
+            if (!isValidPos(pos) || TileType.EMPTY != getTile(pos)) {
                 return;
             }
             for (Direction dir : Direction.values()) {
                 int oppCount = -1;
-                Coordinate pos = new Coordinate(this.pos);
 
                 do {
                     oppCount++;
@@ -77,9 +77,9 @@ public class Board {
                 } while (isValidPos(pos) && getTile(pos) == opponent);
 
                 if (0 >= oppCount || !isValidPos(pos) || getTile(pos) != current) {
-                    this.tileCount.put(dir,0);
+                    this.tileCount.put(dir, 0);
                 } else {
-                    this.tileCount.put(dir,oppCount);
+                    this.tileCount.put(dir, oppCount);
                     this.valid = true;
                 }
             }
@@ -93,7 +93,8 @@ public class Board {
     /**
      * Inicializálja a táblát, ami áll a kezdő korongok elhelyezéséből, és a sötét korongokkal játszó játékos
      * kiválasztásából, ezzel eldöntve, hogy kié a kezdő lépés. Meghatározza továbbá az érvényes első lépéseket is.
-     * @param width A játéktábla szélessége. (Páros szám)
+     *
+     * @param width  A játéktábla szélessége. (Páros szám)
      * @param height A játéktábla magassága (Páratlan szám)
      */
     public Board(int width, int height) {
@@ -111,16 +112,17 @@ public class Board {
             }
             this.board.add(emptyRow);
         }
-        setTile(TileType.LIGHT, this.width/2-1, this.height/2-1);
-        setTile(TileType.LIGHT, this.width/2, this.height/2);
-        setTile(TileType.DARK,  this.width/2-1, this.height/2);
-        setTile(TileType.DARK,  this.width/2, this.height/2-1);
+        setTile(TileType.LIGHT, this.width / 2 - 1, this.height / 2 - 1);
+        setTile(TileType.LIGHT, this.width / 2, this.height / 2);
+        setTile(TileType.DARK, this.width / 2 - 1, this.height / 2);
+        setTile(TileType.DARK, this.width / 2, this.height / 2 - 1);
 
         getValidMoves();
     }
 
     /**
      * Ez a tagfüggvény megadja az érvényes lépések listáját. Ennek a használata ajánlott minden lépés előtt.
+     *
      * @return Az érvényes lépések koordinátáinak listája.
      */
     public ArrayList<Coordinate> getValidCoordinates() {
@@ -136,7 +138,7 @@ public class Board {
     public boolean isValidMove(Coordinate pos) {
         boolean valid = false;
         for (PossibleMove move : this.validMoves) {
-            if (pos.equals(move.pos)) {
+            if (pos.getX() == move.pos.getX() && pos.getY() == move.pos.getY()) {
                 valid = true;
                 break;
             }
@@ -170,7 +172,7 @@ public class Board {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                PossibleMove move = new PossibleMove(i,j);
+                PossibleMove move = new PossibleMove(i, j);
                 if (move.isValid()) {
                     this.validMoves.add(move);
                 }
@@ -209,10 +211,9 @@ public class Board {
         }
 
         for (Direction dir : Direction.values()) {
-            Coordinate flipPos = new Coordinate(move.pos);
             for (int i = 0; i <= move.tileCount.get(dir); i++) {
-                setTile(current, flipPos);
-                flipPos.step(dir);
+                setTile(current, move.pos);
+                move.pos.step(dir);
             }
         }
 
@@ -220,12 +221,12 @@ public class Board {
         current = opponent;
         opponent = temp;
         getValidMoves();
-        if (0 == validMoves.size()) {
+        if (validMoves.isEmpty()) {
             temp = current;
             current = opponent;
             opponent = temp;
             getValidMoves();
-            if (0 == validMoves.size()) {
+            if (validMoves.isEmpty()) {
                 active = false;
             }
         }
