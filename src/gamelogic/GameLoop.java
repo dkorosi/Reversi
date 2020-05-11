@@ -118,9 +118,10 @@ public class GameLoop implements Runnable {
         if (board.getCurrent() == currentPlayer.getColor() && board.isValidMove(pos)) {
             currentPlayer.setNextMove(pos);
             currentPlayer.makeMove();
+            currentPlayer.setTimer(this.timer.getTime());
+            this.timer.setTime(opponentPlayer.getTimer());
             temp = currentPlayer;
             currentPlayer = opponentPlayer;
-
             opponentPlayer = temp;
         }
     }
