@@ -8,5 +8,16 @@ package gamelogic;
 public enum TileType {
     EMPTY,
     DARK,
-    LIGHT
+    LIGHT;
+
+    public TileType enemyTileType() {
+        switch (this) {
+            case DARK:
+                return LIGHT;
+            case LIGHT:
+                return DARK;
+            default:
+                return EMPTY;
+        }
+    }
 }

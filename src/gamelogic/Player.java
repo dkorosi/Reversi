@@ -4,18 +4,16 @@ package gamelogic;
 public abstract class Player {
     private String name;
     private TileType color;
-    private int timer;
-    private Board board;
+    private double timer;
     private Coordinate nextMove;
 
-    public Player(String name, Board board, TileType color, int timer) {
+    public Player(String name, TileType color, double timer) {
         this.name = name;
-        this.board = board;
         this.color = color;
         this.timer = timer;
     }
 
-    public Integer getTimer() {
+    public double getTimer() {
         return timer;
     }
 
@@ -47,9 +45,5 @@ public abstract class Player {
         this.nextMove = nextMove;
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
-    public abstract void makeMove();
+    public abstract void makeMove(Board board);
 }

@@ -7,12 +7,27 @@ package gamelogic;
  * @author borszag
  */
 public enum Direction {
-    N,
-    NE,
-    E,
-    SE,
-    S,
-    SW,
-    W,
-    NW
+    N(0,-1),
+    NE(1,-1),
+    E(1,0),
+    SE(1,1),
+    S(0,1),
+    SW(-1,1),
+    W(-1,0),
+    NW(-1,-1);
+
+    private final int shiftX, shiftY;
+
+    Direction(int xShift, int yShift) {
+        this.shiftX = xShift;
+        this.shiftY = yShift;
+    }
+
+    public int getShiftX() {
+        return shiftX;
+    }
+
+    public int getShiftY() {
+        return shiftY;
+    }
 }

@@ -2,6 +2,8 @@ package gamelogic;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Ez az osztály tartalmazza a játéktábla belső állapotát.
@@ -22,16 +24,12 @@ public class Board {
      */
     private boolean active;
     /**
-     * Az aktuális körben az ellenfél játékos szín.
-     */
-    private TileType opponent;
-    /**
      * Az aktuális körben lépést végrehajtó játékos.
      */
     private TileType current;
 
-    private ArrayList<ArrayList<TileType>> board;
-    private ArrayList<PossibleMove> validMoves;
+    private List<List<TileType>> board;
+    private List<PossibleMove> validMoves;
 
     /**
      * A lépési szabályokat ellenőrző osztály.
@@ -45,18 +43,12 @@ public class Board {
          */
         private boolean valid;
         /**
-         * Az egyes irányokban közrefogható ellenséges korongok száma.
+         * Az egyes irányokban közrefogható ellenséges korongok.
          */
-        private EnumMap<Direction, Integer> tileCount = new EnumMap<>(Direction.class);
+        private EnumMap<Direction, List<Coordinate>> enemyTiles = new EnumMap<>(Direction.class);
 
         public PossibleMove(int x, int y) {
             this.pos = new Coordinate(x, y);
-            this.countReversible();
-        }
-
-        public PossibleMove(Coordinate pos) {
-            this.pos = pos;
-            this.countReversible();
         }
 
         /**
@@ -65,21 +57,23 @@ public class Board {
          */
         private void countReversible() {
             this.valid = false;
-            if (!isValidPos(pos) || TileType.EMPTY != getTile(pos)) {
+            if (!isInBounds(pos) || TileType.EMPTY != getTile(pos)) {
                 return;
             }
             for (Direction dir : Direction.values()) {
-                int oppCount = -1;
+                Coordinate temp = pos.step(dir);
 
-                do {
-                    oppCount++;
-                    pos.step(dir);
-                } while (isValidPos(pos) && getTile(pos) == opponent);
+                List<Coordinate> enemyCoordinates = new ArrayList<>();
 
-                if (0 >= oppCount || !isValidPos(pos) || getTile(pos) != current) {
-                    this.tileCount.put(dir, 0);
+                while (isInBounds(temp) && getTile(temp) == current.enemyTileType()) {
+                    enemyCoordinates.add(temp);
+                    temp = temp.step(dir);
+                }
+
+                if (enemyCoordinates.isEmpty() || !isInBounds(temp) || getTile(temp) != current) {
+                    this.enemyTiles.put(dir, new ArrayList<>());
                 } else {
-                    this.tileCount.put(dir, oppCount);
+                    this.enemyTiles.put(dir, enemyCoordinates);
                     this.valid = true;
                 }
             }
@@ -102,11 +96,10 @@ public class Board {
         this.height = height;
         this.active = true;
         this.current = TileType.DARK;
-        this.opponent = TileType.LIGHT;
         this.board = new ArrayList<>();
         this.validMoves = new ArrayList<>();
         for (int y = 0; y < this.height; y++) {
-            ArrayList<TileType> emptyRow = new ArrayList<>();
+            List<TileType> emptyRow = new ArrayList<>();
             for (int x = 0; x < this.width; x++) {
                 emptyRow.add(TileType.EMPTY);
             }
@@ -117,40 +110,33 @@ public class Board {
         setTile(TileType.DARK, this.width / 2 - 1, this.height / 2);
         setTile(TileType.DARK, this.width / 2, this.height / 2 - 1);
 
-        getValidMoves();
+        calculateValidMoves();
     }
 
     /**
-     * Ez a tagfüggvény megadja az érvényes lépések listáját. Ennek a használata ajánlott minden lépés előtt.
+     * Ez a tagfüggvény megadja az érvényes lépések koordinátáinak a listáját.
      *
      * @return Az érvényes lépések koordinátáinak listája.
      */
-    public ArrayList<Coordinate> getValidCoordinates() {
-        ArrayList<Coordinate> validCoordinates = new ArrayList<>();
-        for (PossibleMove move : this.validMoves) {
-            if (move.isValid()) {
-                validCoordinates.add(move.pos);
-            }
-        }
-        return validCoordinates;
+    public List<Coordinate> getValidCoordinates() {
+        return validMoves.stream().map((move) -> move.pos).collect(Collectors.toList());
     }
 
     public boolean isValidMove(Coordinate pos) {
-        boolean valid = false;
         for (PossibleMove move : this.validMoves) {
-            if (pos.getX() == move.pos.getX() && pos.getY() == move.pos.getY()) {
-                valid = true;
-                break;
+            if (pos.equals(move.pos)) {
+                return true;
             }
         }
-        return valid;
+
+        return false;
     }
 
-    public ArrayList<ArrayList<TileType>> getBoard() {
+    public List<List<TileType>> getBoard() {
         return board;
     }
 
-    private void setTile(TileType newTileType, Integer x, Integer y) {
+    private void setTile(TileType newTileType, int x, int y) {
         this.board.get(x).set(y, newTileType);
     }
 
@@ -158,21 +144,22 @@ public class Board {
         this.board.get(pos.getX()).set(pos.getY(), newTileType);
     }
 
-    public TileType getTile(Coordinate move) {
-        if (!isValidPos(move)) return TileType.EMPTY;
-        return this.board.get(move.getX()).get(move.getY());
+    public TileType getTile(Coordinate pos) {
+        if (!isInBounds(pos)) return TileType.EMPTY;
+        return this.board.get(pos.getX()).get(pos.getY());
     }
 
-    private boolean isValidPos(Coordinate pos) {
+    private boolean isInBounds(Coordinate pos) {
         return 0 <= pos.getX() && pos.getX() < width && 0 <= pos.getY() && pos.getY() < height;
     }
 
-    private void getValidMoves() {
+    private void calculateValidMoves() {
         this.validMoves.clear();
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 PossibleMove move = new PossibleMove(i, j);
+                move.countReversible();
                 if (move.isValid()) {
                     this.validMoves.add(move);
                 }
@@ -192,10 +179,6 @@ public class Board {
         return height;
     }
 
-    public TileType getOpponent() {
-        return opponent;
-    }
-
     public TileType getCurrent() {
         return current;
     }
@@ -205,31 +188,36 @@ public class Board {
             return;
         }
 
-        PossibleMove move = new PossibleMove(pos);
-        if (!move.isValid()) {
+        PossibleMove currentMove = getPossibleMoveByCoordinates(pos);
+        if (null == currentMove)
             return;
-        }
 
+        setTile(player, pos);
         for (Direction dir : Direction.values()) {
-            for (int i = 0; i <= move.tileCount.get(dir); i++) {
-                setTile(current, move.pos);
-                move.pos.step(dir);
+            List<Coordinate> flipPositions = currentMove.enemyTiles.get(dir);
+            for (Coordinate coordinate : flipPositions) {
+                setTile(player, coordinate);
             }
         }
 
-        TileType temp = current;
-        current = opponent;
-        opponent = temp;
-        getValidMoves();
+        current = current.enemyTileType();
+        calculateValidMoves();
         if (validMoves.isEmpty()) {
-            temp = current;
-            current = opponent;
-            opponent = temp;
-            getValidMoves();
+            current = current.enemyTileType();
+            calculateValidMoves();
             if (validMoves.isEmpty()) {
                 active = false;
             }
         }
+    }
+
+    private PossibleMove getPossibleMoveByCoordinates(Coordinate pos) {
+        for (PossibleMove move : validMoves) {
+            if (pos.equals(move.pos)) {
+                return move;
+            }
+        }
+        return null;
     }
 }
 

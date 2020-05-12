@@ -7,6 +7,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.List;
+
 import static gamelogic.TileType.DARK;
 import static gamelogic.TileType.LIGHT;
 import static javafx.scene.paint.Color.BLACK;
@@ -44,57 +46,71 @@ public class Drawer extends AnimationTimer {
     }
 
     private void drawBoard() {
-        double rectangleWidth = this.canvas.getWidth() / this.board.getWidth();
-        double rectangleHeight = (this.canvas.getHeight()) / this.board.getHeight() - 1;
+        double tileWidth = this.canvas.getWidth() / this.board.getWidth();
+        double tileHeight = (this.canvas.getHeight()) / this.board.getHeight() - 1;
 
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
 
+        // Board lenullázása
+        drawBase(gc, tileWidth, tileHeight);
+
+        // Itt a Canvas-ra kirajzoljuk a Board-ot
+        drawPlayers(gc, tileWidth, tileHeight);
+
+        // Lehetséges lépések rajzolása
+        drawValidMoves(gc, tileWidth, tileHeight);
+    }
+
+    private void drawBase(GraphicsContext gc, double tileWidth, double tileHeight) {
         Color fill = Color.rgb(108, 195, 172);
         Color stroke = Color.rgb(12, 74, 60);
         gc.setLineWidth(3);
         gc.setFill(fill);
         gc.setStroke(stroke);
-        //board lenullázása
+
         for (int i = 0; i < this.board.getHeight(); i++) { //y
             for (int j = 0; j < this.board.getWidth(); j++) { //x
-                gc.fillRect(j * rectangleWidth, i * rectangleHeight, rectangleWidth, rectangleHeight);
-                gc.strokeRect(j * rectangleWidth, i * rectangleHeight, rectangleWidth, rectangleHeight);
-
+                gc.fillRect(j * tileWidth, i * tileHeight, tileWidth, tileHeight);
+                gc.strokeRect(j * tileWidth, i * tileHeight, tileWidth, tileHeight);
             }
         }
-        // Itt a Canvas-ra kirajzoljuk a Board-ot
-        double ovalWidth = 0.8 * rectangleWidth;
-        double ovalHeight = 0.8 * rectangleWidth;
+    }
 
-        double xStart = (rectangleWidth - ovalWidth) / 2.0;
-        double yStart = (rectangleHeight - ovalHeight) / 2.0;
+    private void drawPlayers(GraphicsContext gc, double tileWidth, double tileHeight) {
+        double ovalWidth = 0.8 * tileWidth;
+        double ovalHeight = 0.8 * tileWidth;
+
+        double xStart = (tileWidth - ovalWidth) / 2;
+        double yStart = (tileHeight - ovalHeight) / 2;
 
         gc.setLineWidth(2);
         gc.setStroke(BLACK);
-        for (int i = 0; i < this.board.getHeight(); i++) { //y
-            for (int j = 0; j < this.board.getWidth(); j++) { //x
+        for (int i = 0; i < this.board.getHeight(); i++) { // y
+            for (int j = 0; j < this.board.getWidth(); j++) { // x
                 this.board.getTile(new Coordinate(j, i));
                 if (DARK == this.board.getTile(new Coordinate(j, i))) {
                     gc.setFill(BLACK);
-                    gc.fillOval((j) * rectangleWidth + xStart, i * rectangleHeight + yStart, ovalWidth, ovalHeight);
-                    gc.strokeOval((j) * rectangleWidth + xStart, i * rectangleHeight + yStart, ovalWidth, ovalHeight);
+                    gc.fillOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
+                    gc.strokeOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
                 } else if (LIGHT == this.board.getTile(new Coordinate(j, i))) {
                     gc.setFill(WHITE);
-                    gc.fillOval((j) * rectangleWidth + xStart, i * rectangleHeight + yStart, ovalWidth, ovalHeight);
-                    gc.strokeOval((j) * rectangleWidth + xStart, i * rectangleHeight + yStart, ovalWidth, ovalHeight);
+                    gc.fillOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
+                    gc.strokeOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
                 }
-
             }
         }
-        fill = Color.rgb(115, 165, 195);
-        stroke = Color.rgb(12, 74, 60);
+    }
+
+    private void drawValidMoves(GraphicsContext gc, double tileWidth, double tileHeight) {
+        Color fill = Color.rgb(115, 165, 195);
+        Color stroke = Color.rgb(12, 74, 60);
         gc.setLineWidth(3);
         gc.setFill(fill);
         gc.setStroke(stroke);
-        for (int i = 0; i < this.board.getValidCoordinates().size(); i++) {
-            Coordinate cor = board.getValidCoordinates().get(i);
-            gc.fillRect(cor.getX() * rectangleWidth, cor.getY() * rectangleHeight, rectangleWidth, rectangleHeight);
-            gc.strokeRect(cor.getX() * rectangleWidth, cor.getY() * rectangleHeight, rectangleWidth, rectangleHeight);
+        List<Coordinate> validCoordinates = this.board.getValidCoordinates();
+        for (Coordinate cor : validCoordinates) {
+            gc.fillRect(cor.getX() * tileWidth, cor.getY() * tileHeight, tileWidth, tileHeight);
+            gc.strokeRect(cor.getX() * tileWidth, cor.getY() * tileHeight, tileWidth, tileHeight);
         }
     }
 }

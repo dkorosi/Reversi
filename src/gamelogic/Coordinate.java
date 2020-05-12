@@ -34,39 +34,18 @@ public class Coordinate {
      * A megadott koordinátát egy szomszédos mezőre léptető tagfüggvény.
      *
      * @param dir A lépés iránya
+     * @return a lépés során keletkezett koordinátapár
      */
-    public void step(Direction dir) {
-        switch (dir) {
-            case N:
-                this.y += -1;
-                break;
-            case NE:
-                this.x += 1;
-                this.y += -1;
-                break;
-            case E:
-                this.x += 1;
-                break;
-            case SE:
-                this.x += 1;
-                this.y += 1;
-                break;
-            case S:
-                this.y += 1;
-                break;
-            case SW:
-                this.x += -1;
-                this.y += 1;
-                break;
-            case W:
-                this.x += -1;
-                break;
-            case NW:
-                this.x += -1;
-                this.y += -1;
-                break;
-            default:
-                break;
-        }
+    public Coordinate step(Direction dir) {
+        return new Coordinate(x + dir.getShiftX(), y + dir.getShiftY());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (null == o || getClass() != o.getClass()) return false;
+        Coordinate that = (Coordinate) o;
+        return x == that.x &&
+                y == that.y;
     }
 }

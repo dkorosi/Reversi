@@ -1,6 +1,7 @@
 package gamelogic;
 
 import gui.Drawer;
+import gui.GameOptions;
 import gui.Timer;
 import javafx.scene.canvas.Canvas;
 
@@ -12,53 +13,27 @@ public class GameLoop implements Runnable {
     private Player opponentPlayer;
     private Timer timer;
 
-    public GameLoop(Canvas canvas, int difficulty, boolean black, int time) { // 0 -1 -2 a nehézség, melyik színel akar kezdeni
+    public GameLoop(Canvas canvas, GameOptions options) {
         this.board = new Board(8, 8);
-        Player one = new LocalPlayer("Black", this.board, TileType.DARK, 0);
-        Player two = new LocalPlayer("White", this.board, TileType.LIGHT, 0);
 
-        currentPlayer = one;
-        opponentPlayer = two;
+        currentPlayer = new LocalPlayer("DARK", TileType.DARK, options.getTimerStartValue());
+        opponentPlayer = new LocalPlayer("LIGHT", TileType.LIGHT, options.getTimerStartValue());
+
+        // Itt lesz majd a megfelelő játékosinicializálás
+        switch (options.getGameType()) {
+            case SINGLE:
+                break;
+            case LOCAL:
+                break;
+            case ONLINE:
+                break;
+        }
+
         this.drawer = new Drawer(canvas, board);
 
-
-        this.timer = new Timer(time);
-
-        Thread timerTh = new Thread(this.timer);
-        timerTh.start();
-
-    }
-
-    public GameLoop(Canvas canvas, boolean black, int time) { // Lokális játékokhoz
-        this.board = new Board(8, 8);
-        Player one = new LocalPlayer("Black", this.board, TileType.DARK, 0);
-        Player two = new LocalPlayer("White", this.board, TileType.LIGHT, 0);
-
-        currentPlayer = one;
-        opponentPlayer = two;
-        this.drawer = new Drawer(canvas, board);
-
-        this.timer = new Timer(time);
-
-        Thread timer_th = new Thread(this.timer);
-        timer_th.start();
-    }
-
-
-    public GameLoop(Canvas canvas, boolean black, String name, String IP, int time) { // Online
-        this.board = new Board(8, 8);
-        Player one = new LocalPlayer("Black", this.board, TileType.DARK, 0);
-        Player two = new LocalPlayer("White", this.board, TileType.LIGHT, 0);
-
-        currentPlayer = one;
-        opponentPlayer = two;
-        this.drawer = new Drawer(canvas, board);
-
-        this.timer = new Timer(time);
-
-        Thread timer_th = new Thread(this.timer);
-        timer_th.start();
-
+//        this.timer = new Timer(time);
+//        Thread timerTh = new Thread(this.timer);
+//        timerTh.start();
     }
 
     public Drawer getDrawer() {
@@ -109,17 +84,17 @@ public class GameLoop implements Runnable {
         if (board.getCurrent() == currentPlayer.getColor()) {
             if (board.isValidMove(pos)) {
                 currentPlayer.setNextMove(pos);
-                currentPlayer.makeMove();
-                currentPlayer.setTimer(this.timer.getTime());
-                this.timer.setTime(opponentPlayer.getTimer());
+                currentPlayer.makeMove(board);
+//                currentPlayer.setTimer(this.timer.getTime());
+//                this.timer.setTime(opponentPlayer.getTimer());
                 temp = currentPlayer;
                 currentPlayer = opponentPlayer;
                 opponentPlayer = temp;
             }
 
         } else {
-            currentPlayer.setTimer(this.timer.getTime());
-            this.timer.setTime(opponentPlayer.getTimer());
+//            currentPlayer.setTimer(this.timer.getTime());
+//            this.timer.setTime(opponentPlayer.getTimer());
             temp = currentPlayer;
             currentPlayer = opponentPlayer;
             opponentPlayer = temp;

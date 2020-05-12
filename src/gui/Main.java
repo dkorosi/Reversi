@@ -12,12 +12,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage window) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("gui.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/gui.fxml"));
         window.setTitle("Reversi");
         window.setResizable(false);
         window.setScene(new Scene(root, 654, 460));
         window.show();
-        window.getIcons().add(new Image("gui/reversi_img.png"));
+        window.getIcons().add(new Image("/reversi_img.png"));
 
     }
 
