@@ -3,9 +3,11 @@ package gui;
 /**
  * A játékbeállításokat tárolja
  */
+import gamelogic.GameType;
+
 public class GameOptions {
     private GameType gameType;
-    private double timerStartValue;
+    private int timerStartValue;
     private int difficulty;
     private String ipAddress;
     private String name;
@@ -22,7 +24,9 @@ public class GameOptions {
      */
     public GameOptions(GameType gameType, double timerStartValue, int difficulty, String ipAddress, String name, boolean isStartingPlayer) {
         this.gameType = gameType;
-        this.timerStartValue = timerStartValue;
+
+
+        this.timerStartValue = (int)(timerStartValue*60); //converting to int from double
         this.difficulty = difficulty;
         this.ipAddress = ipAddress;
         this.name = name;
@@ -33,7 +37,7 @@ public class GameOptions {
         return gameType;
     }
 
-    public double getTimerStartValue() {
+    public int getTimerStartValue() {
         return timerStartValue;
     }
 

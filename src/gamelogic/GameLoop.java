@@ -2,7 +2,6 @@ package gamelogic;
 
 import gui.Drawer;
 import gui.GameOptions;
-import gui.Timer;
 import javafx.scene.canvas.Canvas;
 
 public class GameLoop implements Runnable {
@@ -11,7 +10,7 @@ public class GameLoop implements Runnable {
     private Board board;
     private Player currentPlayer;
     private Player opponentPlayer;
-    private Timer timer;
+
 
     public GameLoop(Canvas canvas, GameOptions options) {
         this.board = new Board(8, 8);
@@ -22,15 +21,25 @@ public class GameLoop implements Runnable {
         // Itt lesz majd a megfelelő játékosinicializálás
         switch (options.getGameType()) {
             case SINGLE:
+                if(options.isStartingPlayer()) {
+                    currentPlayer.setTimer(options.getTimerStartValue());
+                    opponentPlayer.setTimer(0); //AI second
+
+                }
+                else{
+                    opponentPlayer.setTimer(options.getTimerStartValue());
+                    currentPlayer.setTimer(0); // AI starts
+                }
                 break;
             case LOCAL:
                 break;
             case ONLINE:
                 break;
+
         }
 
         this.drawer = new Drawer(canvas, board);
-
+        this.drawer.setTimer(currentPlayer.getTimer());
 //        this.timer = new Timer(time);
 //        Thread timerTh = new Thread(this.timer);
 //        timerTh.start();
@@ -67,7 +76,7 @@ public class GameLoop implements Runnable {
         }
     }
 
-    public int getTimerVal() {
+    /*public int getTimerVal() {
         return timer.getTime();
     }
 
@@ -77,7 +86,7 @@ public class GameLoop implements Runnable {
 
     public void stopTimer() {
         this.timer.stop();
-    }
+    }*/
 
     public void move(Coordinate pos) {
         Player temp;

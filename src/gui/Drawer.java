@@ -21,6 +21,8 @@ public class Drawer extends AnimationTimer {
     private Canvas canvas;
     private Board board;
     private DrawerController controller;
+    private int timer;
+    private long sysTimer;
 
 
     public Drawer(Canvas canvas, Board board) {
@@ -28,6 +30,25 @@ public class Drawer extends AnimationTimer {
         this.board = board;
     }
 
+    private void timer(){
+        if(System.currentTimeMillis() >= sysTimer + 1000 ){
+            this.sysTimer = System.currentTimeMillis();
+            this.timer = this.timer - 1;
+            if(this.timer <= 0)
+                this.timer = 0;
+
+
+            this.controller.getGameLoop().getCurrentPlayer().setTimer(this.timer);
+        }
+        this.controller.refreshTimer(this.timer);
+    }
+    public void setTimer(int t){
+        this.timer = t;
+    }
+
+    public int getTimer(){
+        return this.timer;
+    }
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
@@ -40,7 +61,7 @@ public class Drawer extends AnimationTimer {
     @Override
     public void handle(long l) {
         drawBoard();
-        this.controller.refreshTimer();
+        timer();
         if (stop)
             this.stop();
     }

@@ -1,5 +1,6 @@
 package gui;
 
+import gamelogic.GameType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +15,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static gui.GameType.*;
+import static gamelogic.GameType.*;
+
 
 public class GuiController {
     private Stage stage;
@@ -112,6 +114,7 @@ public class GuiController {
             diff = 2;
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
         GameOptions gameOptions = new GameOptions(gameType, timer, diff, getMultiIPAddrText(), getMultiNameText(), isBlack);
 
         drawerController.initDrawerController(window.getScene(), gameOptions); //passing menu scene so drawer controller can change back

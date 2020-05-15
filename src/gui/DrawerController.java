@@ -2,6 +2,7 @@ package gui;
 
 import gamelogic.Coordinate;
 import gamelogic.GameLoop;
+import gamelogic.GameType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,15 +40,14 @@ public class DrawerController {
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-//        this.gameLoop.stopTimer();
+
         window.setScene((this.MenuScene));
         window.show();
     }
 
-    public void refreshTimer() {
-        return;
-       /* int min = gameLoop.getTimerVal() / 60;
-        int sec = gameLoop.getTimerVal() - min * 60;
+    public void refreshTimer(int time) {
+        int min = time / 60;
+        int sec = time - min * 60;
 
         String plusSec;
         String plusMin;
@@ -63,9 +63,12 @@ public class DrawerController {
             plusMin = "";
 
         String timerString = plusMin + min + ":" + plusSec + sec;
-        this.timerCountDown.setText(timerString);*/
+        this.timerCountDown.setText(timerString);
     }
 
+    public GameLoop getGameLoop() {
+        return gameLoop;
+    }
 
     void initDrawerController(Scene menu, GameOptions options) {
         this.MenuScene = menu;
@@ -74,6 +77,7 @@ public class DrawerController {
         this.gameLoop = game;
         Thread gameThread = new Thread(game);
         game.getDrawer().setController(this);
+
         gameThread.start();
         nameText.setText(gameLoop.getCurrentPlayer().getName());
         System.out.println("Start Single GAME DC");
@@ -95,8 +99,9 @@ public class DrawerController {
         int x = (int) (event.getX() / rectangleWidth);
         int y = (int) (event.getY() / rectangleHeight);
         Coordinate cor = new Coordinate(x, y);
+
         gameLoop.move(cor);
-        refreshTimer();
+        gameLoop.getDrawer().setTimer(gameLoop.getCurrentPlayer().getTimer());
 
         nameText.setText(gameLoop.getCurrentPlayer().getName());
     }

@@ -1,4 +1,4 @@
-package gui;
+package gamelogic;
 
 public enum GameType {
         SINGLE,
