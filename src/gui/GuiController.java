@@ -54,6 +54,11 @@ public class GuiController {
         changeSceneToCanvas(event, SINGLE, this.timerSliderSingle.getValue()); //Előbb change scene aztán init
         System.out.println("Start Single GAME");
     }
+    @FXML
+    void loadSingleGame(ActionEvent event) throws IOException {
+        changeSceneToCanvas(event, SINGLE, this.timerSliderSingle.getValue()); //Előbb change scene aztán init
+        System.out.println("Start Single GAME");
+    }
 
     @FXML
     void startLocalGame(ActionEvent event) throws IOException {
