@@ -64,6 +64,8 @@ public class DrawerController {
 
         String timerString = plusMin + min + ":" + plusSec + sec;
         this.timerCountDown.setText(timerString);
+        if(time == 0)
+            this.timerCountDown.setText("Game  Over");
     }
 
     public GameLoop getGameLoop() {
