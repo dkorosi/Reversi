@@ -22,14 +22,62 @@ public class Board {
     /**
      * Jelzi, ha vége a játéknak, azaz nem tehető több lépés.
      */
-    private boolean active;
+    private boolean active = true;
     /**
      * Az aktuális körben lépést végrehajtó játékos.
      */
-    private TileType current;
+    private TileType current = TileType.DARK;
 
     private List<List<TileType>> board;
-    private List<PossibleMove> validMoves;
+    private List<PossibleMove> validMoves = new ArrayList<>();
+
+    /**
+     * Inicializálja a táblát, ami áll a kezdő korongok elhelyezéséből, és a sötét korongokkal játszó játékos
+     * kiválasztásából, ezzel eldöntve, hogy kié a kezdő lépés. Meghatározza továbbá az érvényes első lépéseket is.
+     *
+     * @param width  A játéktábla szélessége. (Páros szám)
+     * @param height A játéktábla magassága (Páratlan szám)
+     */
+    public Board(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.board = new ArrayList<>();
+        for (int y = 0; y < this.height; y++) {
+            List<TileType> emptyRow = new ArrayList<>();
+            for (int x = 0; x < this.width; x++) {
+                emptyRow.add(TileType.EMPTY);
+            }
+            this.board.add(emptyRow);
+        }
+        setTile(TileType.LIGHT, this.width / 2 - 1, this.height / 2 - 1);
+        setTile(TileType.LIGHT, this.width / 2, this.height / 2);
+        setTile(TileType.DARK, this.width / 2 - 1, this.height / 2);
+        setTile(TileType.DARK, this.width / 2, this.height / 2 - 1);
+
+        calculateValidMoves();
+    }
+
+    /**
+     * Lemásol egy játékállapotot
+     *
+     * @param board   másik tábla
+     * @param current következő játékos
+     */
+    public Board(List<List<TileType>> board, TileType current) {
+        this.current = current;
+        this.height = board.size();
+        this.width = board.get(0).size();
+
+        this.board = new ArrayList<>();
+        for (int y = 0; y < this.height; y++) {
+            List<TileType> row = new ArrayList<>();
+            for (int x = 0; x < this.width; x++) {
+                row.add(board.get(y).get(x));
+            }
+            this.board.add(row);
+        }
+        calculateValidMoves();
+    }
 
     /**
      * A lépési szabályokat ellenőrző osztály.
@@ -82,35 +130,6 @@ public class Board {
         public boolean isValid() {
             return valid;
         }
-    }
-
-    /**
-     * Inicializálja a táblát, ami áll a kezdő korongok elhelyezéséből, és a sötét korongokkal játszó játékos
-     * kiválasztásából, ezzel eldöntve, hogy kié a kezdő lépés. Meghatározza továbbá az érvényes első lépéseket is.
-     *
-     * @param width  A játéktábla szélessége. (Páros szám)
-     * @param height A játéktábla magassága (Páratlan szám)
-     */
-    public Board(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.active = true;
-        this.current = TileType.DARK;
-        this.board = new ArrayList<>();
-        this.validMoves = new ArrayList<>();
-        for (int y = 0; y < this.height; y++) {
-            List<TileType> emptyRow = new ArrayList<>();
-            for (int x = 0; x < this.width; x++) {
-                emptyRow.add(TileType.EMPTY);
-            }
-            this.board.add(emptyRow);
-        }
-        setTile(TileType.LIGHT, this.width / 2 - 1, this.height / 2 - 1);
-        setTile(TileType.LIGHT, this.width / 2, this.height / 2);
-        setTile(TileType.DARK, this.width / 2 - 1, this.height / 2);
-        setTile(TileType.DARK, this.width / 2, this.height / 2 - 1);
-
-        calculateValidMoves();
     }
 
     /**
@@ -207,6 +226,7 @@ public class Board {
             calculateValidMoves();
             if (validMoves.isEmpty()) {
                 active = false;
+                TileType winner = getWinning();
             }
         }
     }
@@ -218,6 +238,34 @@ public class Board {
             }
         }
         return null;
+    }
+
+    /**
+     * Megállapítja ki áll nyerésre
+     *
+     * @return
+     */
+    public TileType getWinning() {
+        int lightCount = 0;
+        int darkCount = 0;
+        for (List<TileType> row : board) {
+            for (TileType tile : row) {
+                switch (tile) {
+                    case DARK:
+                        ++darkCount;
+                        break;
+                    case LIGHT:
+                        ++lightCount;
+                        break;
+                }
+            }
+        }
+        if (lightCount > darkCount)
+            return TileType.LIGHT;
+        else if (darkCount > lightCount)
+            return TileType.DARK;
+        else
+            return TileType.EMPTY;
     }
 }
 
