@@ -3,6 +3,7 @@ package gui;
 import gamelogic.Coordinate;
 import gamelogic.GameLoop;
 import gamelogic.GameType;
+import gamelogic.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -24,13 +26,31 @@ public class DrawerController {
     private GameLoop gameLoop;
 
     @FXML
+    private Text lightName;
+
+    @FXML
+    private Text lightTimer;
+
+    @FXML
+    private Text darkTiles;
+
+    @FXML
+    private Text lightTiles;
+
+    @FXML
+    private Text darkName;
+
+    @FXML
+    private Text darkTimer;
+
+    @FXML
+    private Rectangle darkRect;
+
+    @FXML
+    private Rectangle lightRect;
+
+    @FXML
     private Canvas canvas;
-
-    @FXML
-    private Text timerCountDown;
-
-    @FXML
-    private Text nameText;
 
     @FXML
     void changeSceneToMenu(ActionEvent event) throws IOException {
@@ -43,29 +63,6 @@ public class DrawerController {
 
         window.setScene((this.MenuScene));
         window.show();
-    }
-
-    public void refreshTimer(int time) {
-        int min = time / 60;
-        int sec = time - min * 60;
-
-        String plusSec;
-        String plusMin;
-
-        if (sec < 10)
-            plusSec = "0";
-        else
-            plusSec = "";
-
-        if (min < 10)
-            plusMin = "0";
-        else
-            plusMin = "";
-
-        String timerString = plusMin + min + ":" + plusSec + sec;
-        this.timerCountDown.setText(timerString);
-        if (time == 0)
-            this.timerCountDown.setText("Infinite");
     }
 
     public GameLoop getGameLoop() {
@@ -81,8 +78,14 @@ public class DrawerController {
         game.getDrawer().setController(this);
 
         gameThread.start();
-        nameText.setText(gameLoop.getCurrentPlayer().getName());
-        System.out.println("Start Single GAME DC");
+        Player firstPlayer = gameLoop.getCurrentPlayer();
+        darkName.setText(firstPlayer.getName());
+        darkRect.setVisible(false);
+        darkTimer.setText(firstPlayer.getTimerString());
+        Player secondPlayer = gameLoop.getIdlePlayer();
+        lightName.setText(gameLoop.getIdlePlayer().getName());
+        lightRect.setVisible(true);
+        lightTimer.setText(secondPlayer.getTimerString());
     }
 
     Canvas getCanvas() {
@@ -112,4 +115,67 @@ public class DrawerController {
 
     }
 
+    public Text getLightName() {
+        return lightName;
+    }
+
+    public void setLightName(Text lightName) {
+        this.lightName = lightName;
+    }
+
+    public Text getLightTimer() {
+        return lightTimer;
+    }
+
+    public void setLightTimer(Text lightTimer) {
+        this.lightTimer = lightTimer;
+    }
+
+    public Text getDarkTiles() {
+        return darkTiles;
+    }
+
+    public void setDarkTiles(Text darkTiles) {
+        this.darkTiles = darkTiles;
+    }
+
+    public Text getLightTiles() {
+        return lightTiles;
+    }
+
+    public void setLightTiles(Text lightTiles) {
+        this.lightTiles = lightTiles;
+    }
+
+    public Text getDarkName() {
+        return darkName;
+    }
+
+    public void setDarkName(Text darkName) {
+        this.darkName = darkName;
+    }
+
+    public Text getDarkTimer() {
+        return darkTimer;
+    }
+
+    public void setDarkTimer(Text darkTimer) {
+        this.darkTimer = darkTimer;
+    }
+
+    public Rectangle getDarkRect() {
+        return darkRect;
+    }
+
+    public void setDarkRect(Rectangle darkRect) {
+        this.darkRect = darkRect;
+    }
+
+    public Rectangle getLightRect() {
+        return lightRect;
+    }
+
+    public void setLightRect(Rectangle lightRect) {
+        this.lightRect = lightRect;
+    }
 }

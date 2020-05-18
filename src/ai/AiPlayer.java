@@ -22,8 +22,8 @@ public class AiPlayer extends Player {
     // Teljesítmény érdekében
     private final ByteSequence[][] pieceByPositionHashes;
 
-    public AiPlayer(String name, TileType color, int timer, int difficulty, int width, int height) {
-        super(name, color, timer, false);
+    public AiPlayer(String name, TileType color, int difficulty, int width, int height) {
+        super(name, color, Long.MAX_VALUE, false);
         difficultyTime = 1000 * (difficulty + 2) / 2;
 
         pieceByPositionHashes = new ByteSequence[width * height][2];

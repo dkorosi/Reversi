@@ -2,6 +2,7 @@ package gui;
 
 import gamelogic.Board;
 import gamelogic.Coordinate;
+import gamelogic.Player;
 import gamelogic.TileType;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
@@ -22,34 +23,29 @@ public class Drawer extends AnimationTimer {
     private Canvas canvas;
     private Board board;
     private DrawerController controller;
-    private int timer;
-    private long sysTimer;
+    private long lastTime = 0;
 
+    private Player lastCurrentPlayer;
 
     public Drawer(Canvas canvas, Board board) {
         this.canvas = canvas;
         this.board = board;
     }
 
-    private void timer() {
-        if (System.currentTimeMillis() >= sysTimer + 1000) {
-            this.sysTimer = System.currentTimeMillis();
-            this.timer = this.timer - 1;
-            if (this.timer <= 0)
-                this.timer = 0;
-
-
-            this.controller.getGameLoop().getCurrentPlayer().setTimer(this.timer);
+    private void refreshTimer() {
+        Player currentPlayer = controller.getGameLoop().getCurrentPlayer();
+        if (lastCurrentPlayer == currentPlayer && lastTime != 0) {
+            long sysTimer = System.currentTimeMillis();
+            currentPlayer.decrementTimer(sysTimer - lastTime);
+            lastTime = sysTimer;
+            if (currentPlayer.getColor() == DARK)
+                controller.getDarkTimer().setText(currentPlayer.getTimerString());
+            else
+                controller.getLightTimer().setText(currentPlayer.getTimerString());
+        } else {
+            lastTime = System.currentTimeMillis();
+            lastCurrentPlayer = currentPlayer;
         }
-        this.controller.refreshTimer(this.timer);
-    }
-
-    public void setTimer(int timer) {
-        this.timer = timer;
-    }
-
-    public int getTimer() {
-        return this.timer;
     }
 
     public void setCanvas(Canvas canvas) {
@@ -64,7 +60,8 @@ public class Drawer extends AnimationTimer {
     @Override
     public void handle(long l) {
         drawBoard();
-        timer();
+        refreshTimer();
+        updateFields();
         if (stop) {
             drawBoard();
             GraphicsContext gc = this.canvas.getGraphicsContext2D();
@@ -72,6 +69,19 @@ public class Drawer extends AnimationTimer {
             gc.fillOval(10, 10, 200, 200);
             this.stop();
         }
+    }
+
+    private void updateFields() {
+        if (controller.getGameLoop().getCurrentPlayer().getColor() == DARK) {
+            controller.getDarkRect().setVisible(true);
+            controller.getLightRect().setVisible(false);
+        } else {
+            controller.getDarkRect().setVisible(false);
+            controller.getLightRect().setVisible(true);
+        }
+
+        controller.getDarkTiles().setText(String.valueOf(controller.getGameLoop().getBoard().getNumberOfTiles(DARK)));
+        controller.getLightTiles().setText(String.valueOf(controller.getGameLoop().getBoard().getNumberOfTiles(LIGHT)));
     }
 
     private void drawBoard() {
@@ -87,7 +97,8 @@ public class Drawer extends AnimationTimer {
         drawPlayers(gc, tileWidth, tileHeight);
 
         // Lehetséges lépések rajzolása
-        drawValidMoves(gc, tileWidth, tileHeight);
+        if (controller.getGameLoop().getCurrentPlayer().isGuiPlayer())
+            drawValidMoves(gc, tileWidth, tileHeight);
     }
 
     private void drawBase(GraphicsContext gc, double tileWidth, double tileHeight) {

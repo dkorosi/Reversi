@@ -135,6 +135,23 @@ public class Board {
     }
 
     /**
+     * Adott színű tile-ok számát adja vissza
+     *
+     * @param tileType szín
+     * @return darabszám
+     */
+    public int getNumberOfTiles(TileType tileType) {
+        int count = 0;
+        for (List<TileType> row : board)
+            for (TileType type : row) {
+                if (type == tileType)
+                    ++count;
+            }
+
+        return count;
+    }
+
+    /**
      * Ez a tagfüggvény megadja az érvényes lépések koordinátáinak a listáját.
      *
      * @return Az érvényes lépések koordinátáinak listája.

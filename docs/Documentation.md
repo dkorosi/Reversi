@@ -1,6 +1,6 @@
 # Tervdokumentáció
 ## Áttekintés
-### Az alkalmazás funciói
+### Az alkalmazás funkciói
 #### Egy- és többjátékos mód
 A felhasználó képes a saját számítógépén AI ellen játékot indítani, emellett
 helyi hálózaton képes egy másik személy ellen játszani. A hálózati játék

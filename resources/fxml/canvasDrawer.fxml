@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -12,6 +10,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -21,7 +21,7 @@
         <items>
           <AnchorPane maxHeight="510.0" maxWidth="510.0" minHeight="510.0" minWidth="510.0" prefHeight="510.0" prefWidth="510.0">
                <children>
-                  <Canvas fx:id="canvas" height="510.0" onMouseClicked="#canvasClicked" width="510.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Canvas fx:id="canvas" height="510.0" layoutX="-8.0" layoutY="14.0" onMouseClicked="#canvasClicked" width="510.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="-8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="14.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="511.0" prefWidth="249.0">
@@ -31,47 +31,50 @@
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                         <GridPane>
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="118.0" minHeight="10.0" prefHeight="36.0" valignment="CENTER" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="118.0" minHeight="10.0" prefHeight="117.0" valignment="CENTER" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="146.0" minHeight="10.0" prefHeight="76.0" valignment="CENTER" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="71.0" minHeight="10.0" prefHeight="67.0" valignment="CENTER" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="98.0" text="Timer:">
-                                 <font>
-                                    <Font name="Arial Bold" size="16.0" />
-                                 </font>
-                                 <GridPane.margin>
-                                    <Insets left="30.0" />
-                                 </GridPane.margin>
-                              </Label>
-                              <Text fx:id="timerCountDown" strokeType="OUTSIDE" strokeWidth="0.0" text="12:00" textAlignment="CENTER" translateX="-5.0" wrappingWidth="60.89831519126892" GridPane.columnIndex="1">
+                              <Text fx:id="lightName" strokeType="OUTSIDE" strokeWidth="0.0" text="NAME" textAlignment="CENTER" wrappingWidth="89.89831519126892" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <font>
                                     <Font name="Arial Bold" size="20.0" />
                                  </font>
-                                 <GridPane.margin>
-                                    <Insets right="40.0" />
-                                 </GridPane.margin>
                               </Text>
-                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="98.0" text="Player:" GridPane.rowIndex="1">
-                                 <font>
-                                    <Font name="Arial Bold" size="16.0" />
-                                 </font>
-                                 <GridPane.margin>
-                                    <Insets left="30.0" />
-                                 </GridPane.margin>
-                              </Label>
-                              <Text fx:id="nameText" strokeType="OUTSIDE" strokeWidth="0.0" text="NAME" textAlignment="CENTER" wrappingWidth="60.89831519126892" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Text fx:id="lightTimer" strokeType="OUTSIDE" strokeWidth="0.0" text="12:00" textAlignment="CENTER" wrappingWidth="96.89831519126892" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <font>
                                     <Font name="Arial Bold" size="20.0" />
                                  </font>
-                                 <GridPane.margin>
-                                    <Insets right="40.0" />
-                                 </GridPane.margin>
                               </Text>
+                              <Circle radius="34.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="1" />
+                              <Circle fill="WHITE" radius="34.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text fx:id="darkTiles" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="32" textAlignment="CENTER" wrappingWidth="88.13671875" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="lightTiles" strokeType="OUTSIDE" strokeWidth="0.0" text="32" textAlignment="CENTER" wrappingWidth="88.13671875" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="darkName" strokeType="OUTSIDE" strokeWidth="0.0" text="NAME" textAlignment="CENTER" wrappingWidth="89.89831519126892" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="Arial Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="darkTimer" strokeType="OUTSIDE" strokeWidth="0.0" text="12:00" textAlignment="CENTER" wrappingWidth="96.89831519126892" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font name="Arial Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                              <Rectangle fx:id="darkRect" arcHeight="5.0" arcWidth="5.0" fill="#14cc2a" height="19.0" stroke="BLACK" strokeType="INSIDE" width="65.0" />
+                              <Rectangle fx:id="lightRect" arcHeight="5.0" arcWidth="5.0" disable="true" fill="#14cc2a" height="19.0" stroke="BLACK" strokeType="INSIDE" width="65.0" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                      </children>

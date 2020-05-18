@@ -4,8 +4,9 @@ package gamelogic;
 public class LocalPlayer extends Player {
     private Coordinate nextMove;
 
-    public LocalPlayer(String name, TileType color, int timer) {
-        super(name, color, timer, true);
+    public LocalPlayer(String name, TileType color, int timerSeconds) {
+        super(name, color, timerSeconds * 1000, true);
+
         nextMove = new Coordinate(-1, -1);
     }
 

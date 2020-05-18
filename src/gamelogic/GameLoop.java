@@ -27,7 +27,7 @@ public class GameLoop implements Runnable {
         // Itt lesz majd a megfelelő játékosinicializálás
         switch (gameType) {
             case SINGLE:
-                opponent = new AiPlayer("Ai", options.getPlayerColor().enemyTileType(), 0, options.getDifficulty(), width, height);
+                opponent = new AiPlayer("Cpu(" + (options.getDifficulty() + 1) + ")", options.getPlayerColor().enemyTileType(), options.getDifficulty(), width, height);
                 break;
             case LOCAL:
                 opponent = new LocalPlayer("Player2", options.getPlayerColor().enemyTileType(), options.getTimerStartValue());
@@ -38,7 +38,6 @@ public class GameLoop implements Runnable {
         }
 
         this.drawer = new Drawer(canvas, board);
-        this.drawer.setTimer(player.getTimer());
 //        this.timer = new Timer(time);
 //        Thread timerTh = new Thread(this.timer);
 //        timerTh.start();
@@ -55,6 +54,13 @@ public class GameLoop implements Runnable {
             return opponent;
     }
 
+    public Player getIdlePlayer() {
+        if (player.getColor() == board.getCurrent())
+            return opponent;
+        else
+            return player;
+    }
+
     public Board getBoard() {
         return board;
     }
@@ -64,7 +70,7 @@ public class GameLoop implements Runnable {
         drawer.start();
         while (board.isActive()) {
             Player currentPlayer = getCurrentPlayer();
-            if (currentPlayer.isOutside()) {
+            if (currentPlayer.isGuiPlayer()) {
                 Thread.yield();
             } else {
                 currentPlayer.makeMove(board);
@@ -88,7 +94,7 @@ public class GameLoop implements Runnable {
 
     public void move(Coordinate pos) {
         Player player = getCurrentPlayer();
-        if (player.isOutside()) {
+        if (player.isGuiPlayer()) {
             player.setNextMove(pos);
             player.makeMove(board);
         }

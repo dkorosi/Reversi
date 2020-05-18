@@ -54,7 +54,7 @@ public class GuiController {
      * Inicializál néhány FXML node-ot
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         startingColorTG.getToggles().get(0).setUserData(TileType.LIGHT);
         startingColorTG.getToggles().get(1).setUserData(TileType.DARK);
         startingColorTGMulti.getToggles().get(0).setUserData(TileType.LIGHT);
@@ -67,21 +67,17 @@ public class GuiController {
     @FXML
     void startSingleGame(ActionEvent event) throws IOException {
         changeSceneToCanvas(event, SINGLE, this.timerSliderSingle.getValue()); //Előbb change scene aztán init
-        System.out.println("Start Single GAME");
     }
 
     @FXML
     void loadSingleGame(ActionEvent event) throws IOException {
         changeSceneToCanvas(event, SINGLE, this.timerSliderSingle.getValue()); //Előbb change scene aztán init
-        System.out.println("Start Single GAME");
     }
 
     @FXML
     void startLocalGame(ActionEvent event) throws IOException {
         String name = getMultiNameText();
         changeSceneToCanvas(event, LOCAL, this.timerSliderMulti.getValue()); //Előbb change scene aztán init
-        System.out.println("Start Local Game");
-        System.out.println("The name is:" + name);
     }
 
     @FXML
@@ -90,8 +86,6 @@ public class GuiController {
         String name = getMultiNameText();
         changeSceneToCanvas(event, ONLINE, this.timerSliderMulti.getValue()); //Előbb change scene aztán init
         //GameLoop game = new GameLoop(canvas_sb);
-        System.out.println("Start Multi Game");
-        System.out.println("The name is: " + name + "\n" + "The IP Address is: " + ipAddr);
     }
 
     @FXML
