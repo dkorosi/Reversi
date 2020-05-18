@@ -5,7 +5,7 @@ public class LocalPlayer extends Player {
     private Coordinate nextMove;
 
     public LocalPlayer(String name, TileType color, int timer) {
-        super(name, color, timer);
+        super(name, color, timer, true);
         nextMove = new Coordinate(-1, -1);
     }
 

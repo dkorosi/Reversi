@@ -64,7 +64,7 @@ public class DrawerController {
 
         String timerString = plusMin + min + ":" + plusSec + sec;
         this.timerCountDown.setText(timerString);
-        if(time == 0)
+        if (time == 0)
             this.timerCountDown.setText("Infinite");
     }
 
@@ -103,9 +103,13 @@ public class DrawerController {
         Coordinate cor = new Coordinate(x, y);
 
         gameLoop.move(cor);
-        gameLoop.getDrawer().setTimer(gameLoop.getCurrentPlayer().getTimer());
+//        synchronized (gameLoop) {
+//            gameLoop.notify();
+//        }
+        // Ezeket csak akkor amikor jó helyre tett az ember
+//        gameLoop.getDrawer().setTimer(gameLoop.getCurrentPlayer().getTimer());
+//        nameText.setText(gameLoop.getCurrentPlayer().getName());
 
-        nameText.setText(gameLoop.getCurrentPlayer().getName());
     }
 
 }

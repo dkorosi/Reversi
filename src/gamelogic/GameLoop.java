@@ -1,37 +1,34 @@
 package gamelogic;
 
+import ai.AiPlayer;
 import gui.Drawer;
 import gui.GameOptions;
 import javafx.scene.canvas.Canvas;
 
 public class GameLoop implements Runnable {
 
+    private GameType gameType;
     private Drawer drawer;
     private Board board;
-    private Player currentPlayer;
-    private Player opponentPlayer;
+    // Aki elindította a játékot
+    private Player player;
+    // Ellenfél játékos, lehet AI, lokális játékos, vagy online játékos
+    private Player opponent;
 
 
     public GameLoop(Canvas canvas, GameOptions options) {
+        this.gameType = options.getGameType();
         this.board = new Board(8, 8);
 
-        currentPlayer = new LocalPlayer("DARK", TileType.DARK, options.getTimerStartValue());
-        opponentPlayer = new LocalPlayer("LIGHT", TileType.LIGHT, options.getTimerStartValue());
+        player = new LocalPlayer("Player", options.getPlayerColor(), options.getTimerStartValue());
 
         // Itt lesz majd a megfelelő játékosinicializálás
-        switch (options.getGameType()) {
+        switch (gameType) {
             case SINGLE:
-                if(options.isStartingPlayer()) {
-                    currentPlayer.setTimer(options.getTimerStartValue());
-                    opponentPlayer.setTimer(0); //AI second
-
-                }
-                else{
-                    opponentPlayer.setTimer(options.getTimerStartValue());
-                    currentPlayer.setTimer(0); // AI starts
-                }
+                opponent = new AiPlayer("Ai", options.getPlayerColor().enemyTileType(), 0, options.getDifficulty());
                 break;
             case LOCAL:
+                opponent = new LocalPlayer("Player2", options.getPlayerColor().enemyTileType(), options.getTimerStartValue());
                 break;
             case ONLINE:
                 break;
@@ -39,7 +36,7 @@ public class GameLoop implements Runnable {
         }
 
         this.drawer = new Drawer(canvas, board);
-        this.drawer.setTimer(currentPlayer.getTimer());
+        this.drawer.setTimer(player.getTimer());
 //        this.timer = new Timer(time);
 //        Thread timerTh = new Thread(this.timer);
 //        timerTh.start();
@@ -50,7 +47,10 @@ public class GameLoop implements Runnable {
     }
 
     public Player getCurrentPlayer() {
-        return currentPlayer;
+        if (player.getColor() == board.getCurrent())
+            return player;
+        else
+            return opponent;
     }
 
     public Board getBoard() {
@@ -59,21 +59,25 @@ public class GameLoop implements Runnable {
 
     @Override
     public void run() {
-        boolean stop = false;
         drawer.start();
-        while (true) {
-
-            if (stop) {
-                drawer.stop();
-                break;
+        while (board.isActive()) {
+            Player currentPlayer = getCurrentPlayer();
+            if (currentPlayer.isOutside()) {
+                Thread.yield();
+//                synchronized (this) {
+//                    if (getCurrentPlayer().isOutside()) {
+//                        try {
+//                            wait();
+//                        } catch (InterruptedException ignored) {
+//                        }
+//                    }
+//                }
+            } else {
+                currentPlayer.makeMove(board);
             }
 
-            stop = !board.isActive();
-
-            // Játéklogika implementációja, függvényeket hívogatunk, melyek visszatérési értékeiből tudjuk,
-            // hogy vége van-e a játéknak
-            //stop = player.nextMove();
         }
+        drawer.setStop();
     }
 
     /*public int getTimerVal() {
@@ -89,24 +93,10 @@ public class GameLoop implements Runnable {
     }*/
 
     public void move(Coordinate pos) {
-        Player temp;
-        if (board.getCurrent() == currentPlayer.getColor()) {
-            if (board.isValidMove(pos)) {
-                currentPlayer.setNextMove(pos);
-                currentPlayer.makeMove(board);
-//                currentPlayer.setTimer(this.timer.getTime());
-//                this.timer.setTime(opponentPlayer.getTimer());
-                temp = currentPlayer;
-                currentPlayer = opponentPlayer;
-                opponentPlayer = temp;
-            }
-
-        } else {
-//            currentPlayer.setTimer(this.timer.getTime());
-//            this.timer.setTime(opponentPlayer.getTimer());
-            temp = currentPlayer;
-            currentPlayer = opponentPlayer;
-            opponentPlayer = temp;
+        Player player = getCurrentPlayer();
+        if (player.isOutside()) {
+            player.setNextMove(pos);
+            player.makeMove(board);
         }
     }
 }

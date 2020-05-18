@@ -3,14 +3,16 @@ package gamelogic;
 
 public abstract class Player {
     private String name;
+    private boolean outside; // Külső játékos-e vagy mi hívjuk a move függvényt
     private TileType color;
     private int timer;
     private Coordinate nextMove;
 
-    public Player(String name, TileType color, int timer) {
+    public Player(String name, TileType color, int timer, boolean outside) {
         this.name = name;
         this.color = color;
         this.timer = timer;
+        this.outside = outside;
     }
 
     public int getTimer() {
@@ -46,4 +48,8 @@ public abstract class Player {
     }
 
     public abstract void makeMove(Board board);
+
+    public boolean isOutside() {
+        return outside;
+    }
 }

@@ -2,6 +2,7 @@ package gui;
 
 import gamelogic.Board;
 import gamelogic.Coordinate;
+import gamelogic.TileType;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,11 +31,11 @@ public class Drawer extends AnimationTimer {
         this.board = board;
     }
 
-    private void timer(){
-        if(System.currentTimeMillis() >= sysTimer + 1000 ){
+    private void timer() {
+        if (System.currentTimeMillis() >= sysTimer + 1000) {
             this.sysTimer = System.currentTimeMillis();
             this.timer = this.timer - 1;
-            if(this.timer <= 0)
+            if (this.timer <= 0)
                 this.timer = 0;
 
 
@@ -42,13 +43,15 @@ public class Drawer extends AnimationTimer {
         }
         this.controller.refreshTimer(this.timer);
     }
-    public void setTimer(int t){
-        this.timer = t;
+
+    public void setTimer(int timer) {
+        this.timer = timer;
     }
 
-    public int getTimer(){
+    public int getTimer() {
         return this.timer;
     }
+
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
@@ -62,8 +65,12 @@ public class Drawer extends AnimationTimer {
     public void handle(long l) {
         drawBoard();
         timer();
-        if (stop)
+        if (stop) {
+            GraphicsContext gc = this.canvas.getGraphicsContext2D();
+            gc.setFill(board.getWinning() == LIGHT ? WHITE : BLACK);
+            gc.fillOval(10, 10, 200, 200);
             this.stop();
+        }
     }
 
     private void drawBoard() {
@@ -133,5 +140,12 @@ public class Drawer extends AnimationTimer {
             gc.fillRect(cor.getX() * tileWidth, cor.getY() * tileHeight, tileWidth, tileHeight);
             gc.strokeRect(cor.getX() * tileWidth, cor.getY() * tileHeight, tileWidth, tileHeight);
         }
+    }
+
+    /**
+     * Ha vége a játéknak, beállítjuk, hogy állítsuk le a thread-et
+     */
+    public void setStop() {
+        this.stop = true;
     }
 }

@@ -1,6 +1,7 @@
 package gui;
 
 import gamelogic.GameType;
+import gamelogic.TileType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,11 +50,26 @@ public class GuiController {
         return difficultyTG;
     }
 
+    /**
+     * Inicializál néhány FXML node-ot
+     */
+    @FXML
+    public void initialize(){
+        startingColorTG.getToggles().get(0).setUserData(TileType.LIGHT);
+        startingColorTG.getToggles().get(1).setUserData(TileType.DARK);
+        startingColorTGMulti.getToggles().get(0).setUserData(TileType.LIGHT);
+        startingColorTGMulti.getToggles().get(1).setUserData(TileType.DARK);
+        difficultyTG.getToggles().get(0).setUserData(0);
+        difficultyTG.getToggles().get(1).setUserData(1);
+        difficultyTG.getToggles().get(2).setUserData(2);
+    }
+
     @FXML
     void startSingleGame(ActionEvent event) throws IOException {
         changeSceneToCanvas(event, SINGLE, this.timerSliderSingle.getValue()); //Előbb change scene aztán init
         System.out.println("Start Single GAME");
     }
+
     @FXML
     void loadSingleGame(ActionEvent event) throws IOException {
         changeSceneToCanvas(event, SINGLE, this.timerSliderSingle.getValue()); //Előbb change scene aztán init
@@ -107,20 +123,14 @@ public class GuiController {
         Scene canvasDrawerScene = new Scene(canvasDrawerParent, 700, 510);
         this.drawerController = loader.getController();
 
-        // Ha a fekete ki van jelölve
-        boolean isBlack = startingColorTG.getToggles().get(1).isSelected();
+        // Kiválaszott szín
+        TileType selectedColor = (TileType) startingColorTG.getSelectedToggle().getUserData();
 
-        int diff;
-        if (difficultyTG.getToggles().get(0).isSelected())
-            diff = 0;
-        else if (difficultyTG.getToggles().get(1).isSelected())
-            diff = 1;
-        else
-            diff = 2;
+        int diff = (int) difficultyTG.getSelectedToggle().getUserData();
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        GameOptions gameOptions = new GameOptions(gameType, timer, diff, getMultiIPAddrText(), getMultiNameText(), isBlack);
+        GameOptions gameOptions = new GameOptions(gameType, timer, diff, getMultiIPAddrText(), getMultiNameText(), selectedColor);
 
         drawerController.initDrawerController(window.getScene(), gameOptions); //passing menu scene so drawer controller can change back
 

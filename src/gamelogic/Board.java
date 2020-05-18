@@ -54,7 +54,7 @@ public class Board {
         setTile(TileType.DARK, this.width / 2 - 1, this.height / 2);
         setTile(TileType.DARK, this.width / 2, this.height / 2 - 1);
 
-        calculateValidMoves();
+        calculateValidMoves(current);
     }
 
     /**
@@ -76,7 +76,7 @@ public class Board {
             }
             this.board.add(row);
         }
-        calculateValidMoves();
+        calculateValidMoves(current);
     }
 
     /**
@@ -102,8 +102,9 @@ public class Board {
         /**
          * Egy lehetséges lépési koordináta esetén meghatározza annak érvényességét, illetve meghatározza a közrefogható
          * ellenséges korongok számát az irány függvényében.
+         * @param current
          */
-        private void countReversible() {
+        private void countReversible(TileType current) {
             this.valid = false;
             if (!isInBounds(pos) || TileType.EMPTY != getTile(pos)) {
                 return;
@@ -172,13 +173,13 @@ public class Board {
         return 0 <= pos.getX() && pos.getX() < width && 0 <= pos.getY() && pos.getY() < height;
     }
 
-    private void calculateValidMoves() {
+    private void calculateValidMoves(TileType current) {
         this.validMoves.clear();
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 PossibleMove move = new PossibleMove(i, j);
-                move.countReversible();
+                move.countReversible(current);
                 if (move.isValid()) {
                     this.validMoves.add(move);
                 }
@@ -219,16 +220,17 @@ public class Board {
             }
         }
 
-        current = current.enemyTileType();
-        calculateValidMoves();
+        TileType temp = current.enemyTileType();
+        calculateValidMoves(temp);
         if (validMoves.isEmpty()) {
-            current = current.enemyTileType();
-            calculateValidMoves();
+            temp = temp.enemyTileType();
+            calculateValidMoves(temp);
             if (validMoves.isEmpty()) {
                 active = false;
                 TileType winner = getWinning();
             }
         }
+        current = temp;
     }
 
     private PossibleMove getPossibleMoveByCoordinates(Coordinate pos) {

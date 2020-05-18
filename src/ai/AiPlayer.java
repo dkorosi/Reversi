@@ -12,21 +12,27 @@ import java.util.*;
  */
 public class AiPlayer extends Player {
 
-    private int difficulty;
+    private int totalSimulations;
+    private int moveNumber = 0;
     private Random rand = new Random();
 
     public AiPlayer(String name, TileType color, int timer, int difficulty) {
-        super(name, color, timer);
-        this.difficulty = difficulty;
+        super(name, color, timer, false);
+        totalSimulations = 1000 * (difficulty + 1);
     }
 
     @Override
     public void makeMove(Board board) {
+        ++moveNumber;
         List<Coordinate> moves = board.getValidCoordinates();
         if (moves.isEmpty() || board.getCurrent() != getColor())
             return;
 
-        int totalSimulations = 100;
+        if (moveNumber == 1) {
+            makeRandomMove(board);
+            return;
+        }
+
         int simulationsPerMove = totalSimulations / moves.size();
 
         Map<Coordinate, Integer> moveScores = new HashMap<>();
