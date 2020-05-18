@@ -102,6 +102,7 @@ public class Board {
         /**
          * Egy lehetséges lépési koordináta esetén meghatározza annak érvényességét, illetve meghatározza a közrefogható
          * ellenséges korongok számát az irány függvényében.
+         *
          * @param current
          */
         private void countReversible(TileType current) {
@@ -139,7 +140,9 @@ public class Board {
      * @return Az érvényes lépések koordinátáinak listája.
      */
     public List<Coordinate> getValidCoordinates() {
-        return validMoves.stream().map((move) -> move.pos).collect(Collectors.toList());
+        synchronized (this) {
+            return validMoves.stream().map((move) -> move.pos).collect(Collectors.toList());
+        }
     }
 
     public boolean isValidMove(Coordinate pos) {
@@ -152,21 +155,21 @@ public class Board {
         return false;
     }
 
-    public List<List<TileType>> getBoard() {
+    public synchronized List<List<TileType>> getBoard() {
         return board;
     }
 
     private void setTile(TileType newTileType, int x, int y) {
-        this.board.get(x).set(y, newTileType);
+        this.board.get(y).set(x, newTileType);
     }
 
     private void setTile(TileType newTileType, Coordinate pos) {
-        this.board.get(pos.getX()).set(pos.getY(), newTileType);
+        this.board.get(pos.getY()).set(pos.getX(), newTileType);
     }
 
     public TileType getTile(Coordinate pos) {
         if (!isInBounds(pos)) return TileType.EMPTY;
-        return this.board.get(pos.getX()).get(pos.getY());
+        return this.board.get(pos.getY()).get(pos.getX());
     }
 
     private boolean isInBounds(Coordinate pos) {
@@ -203,20 +206,24 @@ public class Board {
         return current;
     }
 
-    public void makeMoveAt(TileType player, Coordinate pos) {
+    public List<Coordinate> makeMoveAt(TileType player, Coordinate pos) {
         if (player != current) {
-            return;
+            return null;
         }
 
         PossibleMove currentMove = getPossibleMoveByCoordinates(pos);
         if (null == currentMove)
-            return;
+            return null;
+
+        List<Coordinate> changedPos = new ArrayList<>();
 
         setTile(player, pos);
+        changedPos.add(pos);
         for (Direction dir : Direction.values()) {
             List<Coordinate> flipPositions = currentMove.enemyTiles.get(dir);
             for (Coordinate coordinate : flipPositions) {
                 setTile(player, coordinate);
+                changedPos.add(coordinate);
             }
         }
 
@@ -231,6 +238,7 @@ public class Board {
             }
         }
         current = temp;
+        return changedPos;
     }
 
     private PossibleMove getPossibleMoveByCoordinates(Coordinate pos) {
@@ -245,7 +253,7 @@ public class Board {
     /**
      * Megállapítja ki áll nyerésre
      *
-     * @return
+     * @return megfelelő színt, TileType.EMPTY-t ha döntetlen
      */
     public TileType getWinning() {
         int lightCount = 0;

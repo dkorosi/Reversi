@@ -12,64 +12,147 @@ import java.util.*;
  */
 public class AiPlayer extends Player {
 
-    private int totalSimulations;
-    private int moveNumber = 0;
-    private Random rand = new Random();
+    private static final double EXPLOITATION = 1.4142;
+    private static final int HASH_LENGTH = 8;
 
-    public AiPlayer(String name, TileType color, int timer, int difficulty) {
+    private int difficultyTime;
+    private Random rand = new Random();
+    private Map<ByteSequence, GameState> gameStates = new HashMap<>();
+
+    // Teljesítmény érdekében
+    private final ByteSequence[][] pieceByPositionHashes;
+
+    public AiPlayer(String name, TileType color, int timer, int difficulty, int width, int height) {
         super(name, color, timer, false);
-        totalSimulations = 1000 * (difficulty + 1);
+        difficultyTime = 1000 * (difficulty + 2) / 2;
+
+        pieceByPositionHashes = new ByteSequence[width * height][2];
+        for (int i = 0; i < width * height; i++) {
+            for (int j = 0; j < 2; j++) {
+                byte[] bytes = new byte[HASH_LENGTH];
+                rand.nextBytes(bytes);
+                pieceByPositionHashes[i][j] = new ByteSequence(bytes);
+            }
+        }
     }
 
     @Override
     public void makeMove(Board board) {
-        ++moveNumber;
         List<Coordinate> moves = board.getValidCoordinates();
         if (moves.isEmpty() || board.getCurrent() != getColor())
             return;
 
-        if (moveNumber == 1) {
-            makeRandomMove(board);
-            return;
-        }
+        int timePerMove = difficultyTime / moves.size();
 
-        int simulationsPerMove = totalSimulations / moves.size();
+        Map<Coordinate, GameState> moveScores = new HashMap<>();
+        ByteSequence boardHash = hashBoard(board.getBoard());
+        GameState initialGameState = gameStates.get(boardHash);
+        int parentSimulations = 0;
+        if (initialGameState != null)
+            parentSimulations = initialGameState.getSimulations();
 
-        Map<Coordinate, Integer> moveScores = new HashMap<>();
         for (Coordinate move : moves) {
-            int score = 0;
-            for (int i = 0; i < simulationsPerMove; i++) {
-                Board simBoard = new Board(board.getBoard(), getColor());
-                simBoard.makeMoveAt(getColor(), move);
-
-                while (simBoard.isActive()) {
-                    makeRandomMove(simBoard);
-                }
-
-                TileType winner = simBoard.getWinning();
-                if (winner == getColor()) {
-                    score += 1;
-                } else if (winner == getColor().enemyTileType())
-                    score -= 1;
+            double score;
+            Board boardAfterMove = new Board(board.getBoard(), getColor());
+            List<Coordinate> changedCoordinates = boardAfterMove.makeMoveAt(getColor(), move);
+            // Ha ez egy lépés van hátra, ha győzünk lépjük azt, ha nem folytassuk
+            if (!boardAfterMove.isActive()) {
+                if (board.getWinning() == getColor() || move.equals(moves.get(moves.size() - 1))) {
+                    board.makeMoveAt(getColor(), move);
+                    return;
+                } else
+                    continue;
             }
-            moveScores.put(move, score);
-        }
 
-        Coordinate move = getMaximumScoreMove(moveScores);
+            ByteSequence boardAfterMoveHash = changeBoardHash(boardHash, getColor(), changedCoordinates, board.getWidth());
+            GameState gameState = gameStates.get(boardAfterMoveHash);
+            if (gameState == null) {
+                gameState = new GameState();
+            }
+
+            long startTime = System.currentTimeMillis();
+            while (System.currentTimeMillis() < startTime + timePerMove) {
+                Board simBoard = new Board(boardAfterMove.getBoard(), boardAfterMove.getCurrent());
+
+                score = simulateRecursive(simBoard, boardAfterMoveHash);
+                gameState.increaseScore(score);
+            }
+            moveScores.put(move, gameState);
+        }
+        Coordinate move = getMaximumScoreMove(moveScores, parentSimulations);
         board.makeMoveAt(getColor(), move);
     }
 
-    private void makeRandomMove(Board board) {
+
+    private double simulateRecursive(Board board, ByteSequence boardHash) {
+        TileType nextColor = board.getCurrent();
+        List<Coordinate> changedCoordinates = makeRandomMove(board);
+        if (board.isActive()) {
+            ByteSequence hash = changeBoardHash(boardHash, nextColor, changedCoordinates, board.getWidth());
+            double score = simulateRecursive(board, hash);
+            if (nextColor == getColor()) {
+                GameState gameState = gameStates.get(hash);
+                if (gameState == null)
+                    gameStates.put(hash, new GameState(score));
+                else {
+                    gameState.increaseScore(score);
+                }
+            }
+            return score;
+        } else {
+            TileType winner = board.getWinning();
+            if (winner == getColor()) {
+                return 1;
+            } else if (winner == TileType.EMPTY)
+                return 0.5;
+        }
+        return 0;
+    }
+
+    private ByteSequence hashBoard(List<List<TileType>> board) {
+        int width = board.get(0).size();
+        byte[] boardHash = new byte[HASH_LENGTH];
+        for (int y = 0; y < board.size(); y++) {
+            for (int x = 0; x < width; x++) {
+                TileType tile = board.get(y).get(x);
+                if (tile == TileType.EMPTY)
+                    continue;
+                for (int k = 0; k < HASH_LENGTH; k++) {
+                    boardHash[k] ^= pieceByPositionHashes[y * width + x][tile.getIndex() - 1].getBytes()[k];
+                }
+            }
+        }
+        return new ByteSequence(boardHash);
+    }
+
+    private ByteSequence changeBoardHash(ByteSequence initialHash, TileType color, List<Coordinate> changedCoordinates, int boardWidth) {
+        byte[] newHash = new byte[HASH_LENGTH];
+        for (int i = 0; i < HASH_LENGTH; i++) {
+            newHash[i] = initialHash.getBytes()[i];
+            for (int j = 0; j < changedCoordinates.size(); j++) {
+                Coordinate coordinate = changedCoordinates.get(j);
+                int tileNumber = coordinate.getY() * boardWidth + coordinate.getX();
+                if (j != 0) // Ha üres volt, nem vesszük ki az ellenfelet, az az első a listában
+                    newHash[i] ^= pieceByPositionHashes[tileNumber][color.enemyTileType().getIndex() - 1].getBytes()[i];
+                newHash[i] ^= pieceByPositionHashes[tileNumber][color.getIndex() - 1].getBytes()[i];
+            }
+
+        }
+        return new ByteSequence(newHash);
+    }
+
+    private List<Coordinate> makeRandomMove(Board board) {
         List<Coordinate> moves = board.getValidCoordinates();
 
         Coordinate randomMove = moves.get(rand.nextInt(moves.size()));
-        board.makeMoveAt(board.getCurrent(), randomMove);
+        return board.makeMoveAt(board.getCurrent(), randomMove);
     }
 
-    private Coordinate getMaximumScoreMove(Map<Coordinate, Integer> moveScores) {
-        Map.Entry<Coordinate, Integer> maxEntry = null;
-        for (Map.Entry<Coordinate, Integer> entry : moveScores.entrySet()) {
-            if (null == maxEntry || 0 < entry.getValue().compareTo(maxEntry.getValue())) {
+    private Coordinate getMaximumScoreMove(Map<Coordinate, GameState> moveScores, int parentSimulations) {
+        Map.Entry<Coordinate, GameState> maxEntry = null;
+        for (Map.Entry<Coordinate, GameState> entry : moveScores.entrySet()) {
+            if (null == maxEntry || entry.getValue().getUct(parentSimulations, EXPLOITATION) >
+                    maxEntry.getValue().getUct(parentSimulations, EXPLOITATION)) {
                 maxEntry = entry;
             }
         }

@@ -18,14 +18,16 @@ public class GameLoop implements Runnable {
 
     public GameLoop(Canvas canvas, GameOptions options) {
         this.gameType = options.getGameType();
-        this.board = new Board(8, 8);
+        int height = 8;
+        int width = 8;
+        this.board = new Board(width, height);
 
         player = new LocalPlayer("Player", options.getPlayerColor(), options.getTimerStartValue());
 
         // Itt lesz majd a megfelelő játékosinicializálás
         switch (gameType) {
             case SINGLE:
-                opponent = new AiPlayer("Ai", options.getPlayerColor().enemyTileType(), 0, options.getDifficulty());
+                opponent = new AiPlayer("Ai", options.getPlayerColor().enemyTileType(), 0, options.getDifficulty(), width, height);
                 break;
             case LOCAL:
                 opponent = new LocalPlayer("Player2", options.getPlayerColor().enemyTileType(), options.getTimerStartValue());
@@ -64,14 +66,6 @@ public class GameLoop implements Runnable {
             Player currentPlayer = getCurrentPlayer();
             if (currentPlayer.isOutside()) {
                 Thread.yield();
-//                synchronized (this) {
-//                    if (getCurrentPlayer().isOutside()) {
-//                        try {
-//                            wait();
-//                        } catch (InterruptedException ignored) {
-//                        }
-//                    }
-//                }
             } else {
                 currentPlayer.makeMove(board);
             }

@@ -6,9 +6,15 @@ package gamelogic;
  * @author borszag
  */
 public enum TileType {
-    EMPTY,
-    DARK,
-    LIGHT;
+    EMPTY(0),
+    DARK(1),
+    LIGHT(2);
+
+    private final int index;
+
+    TileType(int index) {
+        this.index = index;
+    }
 
     public TileType enemyTileType() {
         switch (this) {
@@ -19,5 +25,9 @@ public enum TileType {
             default:
                 return EMPTY;
         }
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

@@ -66,6 +66,7 @@ public class Drawer extends AnimationTimer {
         drawBoard();
         timer();
         if (stop) {
+            drawBoard();
             GraphicsContext gc = this.canvas.getGraphicsContext2D();
             gc.setFill(board.getWinning() == LIGHT ? WHITE : BLACK);
             gc.fillOval(10, 10, 200, 200);
