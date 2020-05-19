@@ -96,7 +96,7 @@ public class Drawer extends AnimationTimer {
         drawPlayers(gc, tileWidth, tileHeight);
 
         // Lehetséges lépések rajzolása
-        if (controller.getGameLoop().getCurrentPlayer().isGuiPlayer())
+        if (controller.getGameLoop().getCurrentPlayer().isHuman())
             drawValidMoves(gc, tileWidth, tileHeight);
     }
 

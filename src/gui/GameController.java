@@ -14,9 +14,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
-
 public class GameController {
 
     private Scene menuScene;
@@ -55,9 +52,8 @@ public class GameController {
     private Canvas canvas;
 
     @FXML
-    void changeSceneToMenu(ActionEvent event) throws IOException {
+    void changeSceneToMenu(ActionEvent event) {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
 
         window.setScene((this.menuScene));
         window.show();
@@ -102,13 +98,6 @@ public class GameController {
         Coordinate cor = new Coordinate(x, y);
 
         gameLoop.move(cor);
-//        synchronized (gameLoop) {
-//            gameLoop.notify();
-//        }
-        // Ezeket csak akkor amikor jó helyre tett az ember
-//        gameLoop.getDrawer().setTimer(gameLoop.getCurrentPlayer().getTimer());
-//        nameText.setText(gameLoop.getCurrentPlayer().getName());
-
     }
 
     public Text getLightName() {

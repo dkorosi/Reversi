@@ -22,25 +22,25 @@ public class GameLoop implements Runnable {
         int width = 8;
         this.board = new Board(width, height);
 
-        player = new LocalPlayer("Player", options.getPlayerColor(), options.getTimerStartValue());
-
         // Itt lesz majd a megfelelő játékosinicializálás
         switch (gameType) {
             case SINGLE:
-                opponent = new AiPlayer("Cpu(" + (options.getDifficulty() + 1) + ")", options.getPlayerColor().enemyTileType(), options.getDifficulty(), width, height);
+                player = new LocalPlayer("Player 1", options.getPlayerColor(), options.getTimerStartValue());
+                opponent = new AiPlayer("Cpu(" + (options.getDifficulty() + 1) + ")",
+                        options.getPlayerColor().enemyTileType(), options.getDifficulty(), width, height);
                 break;
             case LOCAL:
-                opponent = new LocalPlayer("Player2", options.getPlayerColor().enemyTileType(), options.getTimerStartValue());
+                player = new LocalPlayer("Player 1", TileType.DARK, options.getTimerStartValue());
+                opponent = new LocalPlayer("Player 2", TileType.LIGHT, options.getTimerStartValue());
                 break;
             case ONLINE:
+                player = new LocalPlayer(options.getName(), options.getPlayerColor(), options.getTimerStartValue());
+//                opponent = new OnlinePlayer(options.getName(), options.getPlayerColor(), options.getTimerStartValue());
                 break;
 
         }
 
         this.drawer = new Drawer(canvas, board);
-//        this.timer = new Timer(time);
-//        Thread timerTh = new Thread(this.timer);
-//        timerTh.start();
     }
 
     public Drawer getDrawer() {
@@ -70,7 +70,7 @@ public class GameLoop implements Runnable {
         drawer.start();
         while (board.isActive()) {
             Player currentPlayer = getCurrentPlayer();
-            if (currentPlayer.isGuiPlayer()) {
+            if (currentPlayer.isHuman()) {
                 Thread.yield();
             } else {
                 currentPlayer.makeMove(board);
@@ -80,21 +80,9 @@ public class GameLoop implements Runnable {
         drawer.setStop();
     }
 
-    /*public int getTimerVal() {
-        return timer.getTime();
-    }
-
-    public void setTimerVal(int time) {
-        this.timer.setTime(time);
-    }
-
-    public void stopTimer() {
-        this.timer.stop();
-    }*/
-
     public void move(Coordinate pos) {
         Player player = getCurrentPlayer();
-        if (player.isGuiPlayer()) {
+        if (player.isHuman()) {
             player.setNextMove(pos);
             player.makeMove(board);
         }

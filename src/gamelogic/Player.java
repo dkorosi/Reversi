@@ -3,19 +3,19 @@ package gamelogic;
 
 public abstract class Player {
     private String name;
-    private boolean outside; // Külső játékos-e vagy mi hívjuk a move függvényt
+    private boolean isHuman; // Külső játékos-e vagy mi hívjuk a move függvényt
     private TileType color;
     private long timer;
     private Coordinate nextMove;
 
-    public Player(String name, TileType color, long timer, boolean outside) {
+    public Player(String name, TileType color, long timer, boolean isHuman) {
         if (timer == 0) {
             timer = Long.MAX_VALUE;
         }
         this.name = name;
         this.color = color;
         this.timer = timer;
-        this.outside = outside;
+        this.isHuman = isHuman;
     }
 
     public long getTimer() {
@@ -52,8 +52,8 @@ public abstract class Player {
 
     public abstract void makeMove(Board board);
 
-    public boolean isGuiPlayer() {
-        return outside;
+    public boolean isHuman() {
+        return isHuman;
     }
 
     public String getTimerString() {
