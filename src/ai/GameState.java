@@ -33,7 +33,7 @@ public class GameState {
      * @return UCT
      */
     public double getUct(int parentSimulations, double exploitation) {
-        return score / simulations + exploitation * Math.sqrt(Math.log(parentSimulations) / simulations);
+        return score / simulations + exploitation * Math.sqrt(Math.log(parentSimulations + 1) / simulations);
     }
 
 }

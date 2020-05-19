@@ -3,7 +3,6 @@ package gui;
 import gamelogic.Board;
 import gamelogic.Coordinate;
 import gamelogic.Player;
-import gamelogic.TileType;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,7 +21,7 @@ public class Drawer extends AnimationTimer {
     private boolean stop = false;
     private Canvas canvas;
     private Board board;
-    private DrawerController controller;
+    private GameController controller;
     private long lastTime = 0;
 
     private Player lastCurrentPlayer;
@@ -52,7 +51,7 @@ public class Drawer extends AnimationTimer {
         this.canvas = canvas;
     }
 
-    public void setController(DrawerController controller) {
+    public void setController(GameController controller) {
         this.controller = controller;
     }
 

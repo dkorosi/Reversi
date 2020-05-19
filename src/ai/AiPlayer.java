@@ -51,6 +51,11 @@ public class AiPlayer extends Player {
         if (initialGameState != null)
             parentSimulations = initialGameState.getSimulations();
 
+        if (moves.size() == 1) {
+            board.makeMoveAt(getColor(), moves.get(1));
+            return;
+        }
+
         for (Coordinate move : moves) {
             double score;
             Board boardAfterMove = new Board(board.getBoard(), getColor());

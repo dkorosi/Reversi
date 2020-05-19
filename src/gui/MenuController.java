@@ -6,21 +6,24 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import net.NetUtils;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import static gamelogic.GameType.*;
 
 
-public class GuiController {
-    private Stage stage;
+public class MenuController {
+
     @FXML
     private Slider timerSliderSingle;
     @FXML
@@ -38,11 +41,15 @@ public class GuiController {
     @FXML
     private TextField multiIPAddrText;
 
+    @FXML
+    private Text onlineMessage;
 
-    DrawerController drawerController;
+    @FXML
+    private ButtonBar invitationButtonBar;
+
+    private GameController gameController;
 
     public ToggleGroup getStartingColorTG() {
-
         return startingColorTG;
     }
 
@@ -62,6 +69,12 @@ public class GuiController {
         difficultyTG.getToggles().get(0).setUserData(0);
         difficultyTG.getToggles().get(1).setUserData(1);
         difficultyTG.getToggles().get(2).setUserData(2);
+
+        try {
+            onlineMessage.setText("Your IP address is " + NetUtils.getIpAddress());
+        } catch (UnknownHostException e) {
+            onlineMessage.setText("Your IP address is unavailable");
+        }
     }
 
     @FXML
@@ -109,26 +122,41 @@ public class GuiController {
         return multiIPAddrText.getText();
     }
 
-    private void changeSceneToCanvas(ActionEvent event, GameType gameType, double timer) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/fxml/canvasDrawer.fxml"));
-        Parent canvasDrawerParent = loader.load();
+    @FXML
+    void acceptInvitation(ActionEvent event) {
 
-        Scene canvasDrawerScene = new Scene(canvasDrawerParent, 700, 510);
-        this.drawerController = loader.getController();
+    }
+
+    @FXML
+    void declineInvitation(ActionEvent event) {
+
+    }
+
+    private void changeSceneToCanvas(ActionEvent event, GameType gameType, double timer) throws IOException {
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene gameScene;
+        if (gameController == null) {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/canvasDrawer.fxml"));
+            loader.load();
+            gameController = loader.getController();
+            gameScene = new Scene(gameController.getRoot(), 700, 510);
+
+            // passing menu scene so drawer controller can change back, and game scene so we can change to it
+            gameController.setScenes(window.getScene(), gameScene);
+        } else {
+            gameScene = gameController.getGameScene();
+        }
 
         // Kiválaszott szín
         TileType selectedColor = (TileType) startingColorTG.getSelectedToggle().getUserData();
 
         int diff = (int) difficultyTG.getSelectedToggle().getUserData();
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
         GameOptions gameOptions = new GameOptions(gameType, timer, diff, getMultiIPAddrText(), getMultiNameText(), selectedColor);
 
-        drawerController.initDrawerController(window.getScene(), gameOptions); //passing menu scene so drawer controller can change back
-
-        window.setScene((canvasDrawerScene));
+        gameController.startGame(gameOptions);
+        window.setScene((gameScene));
         window.show();
     }
 

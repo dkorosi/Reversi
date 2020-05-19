@@ -2,11 +2,9 @@ package gui;
 
 import gamelogic.Coordinate;
 import gamelogic.GameLoop;
-import gamelogic.GameType;
 import gamelogic.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,11 +17,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
-public class DrawerController {
+public class GameController {
 
-    private GameType gameType;
-    private Scene MenuScene;
+    private Scene menuScene;
+    private Scene gameScene;
+
     private GameLoop gameLoop;
+
+    @FXML
+    private Parent root;
 
     @FXML
     private Text lightName;
@@ -54,14 +56,10 @@ public class DrawerController {
 
     @FXML
     void changeSceneToMenu(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/fxml/gui.fxml"));
-        Parent root = loader.load();
-
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
 
-        window.setScene((this.MenuScene));
+        window.setScene((this.menuScene));
         window.show();
     }
 
@@ -69,8 +67,7 @@ public class DrawerController {
         return gameLoop;
     }
 
-    void initDrawerController(Scene menu, GameOptions options) {
-        this.MenuScene = menu;
+    void startGame(GameOptions options) {
 
         GameLoop game = new GameLoop(this.canvas, options);
         this.gameLoop = game;
@@ -91,7 +88,6 @@ public class DrawerController {
     Canvas getCanvas() {
         return this.canvas;
     }
-
 
     @FXML
     void canvasClicked(MouseEvent event) {
@@ -177,5 +173,18 @@ public class DrawerController {
 
     public void setLightRect(Rectangle lightRect) {
         this.lightRect = lightRect;
+    }
+
+    public Parent getRoot() {
+        return root;
+    }
+
+    public void setScenes(Scene menuScene, Scene gameScene) {
+        this.menuScene = menuScene;
+        this.gameScene = gameScene;
+    }
+
+    public Scene getGameScene() {
+        return gameScene;
     }
 }
