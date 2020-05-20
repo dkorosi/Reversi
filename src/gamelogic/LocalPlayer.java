@@ -2,24 +2,17 @@ package gamelogic;
 
 
 public class LocalPlayer extends Player {
-    private Coordinate nextMove;
 
     public LocalPlayer(String name, TileType color, int timerSeconds) {
-        super(name, color, timerSeconds * 1000, true);
+        super(name, color, timerSeconds, true);
 
-        nextMove = new Coordinate(-1, -1);
-    }
-
-    public Coordinate getNextMove() {
-        return nextMove;
-    }
-
-    public void setNextMove(Coordinate nextMove) {
-        this.nextMove = nextMove;
     }
 
     @Override
     public void makeMove(Board board) {
-        board.makeMoveAt(this.getColor(), this.nextMove);
+        Object changedTiles = board.makeMoveAt(this.getColor(), getNextMove());
+        // Ha helyes helyre léptünk, elindítjuk a timert (csak az első lépésnél kötelező)
+        if (changedTiles != null)
+            setMoved();
     }
 }

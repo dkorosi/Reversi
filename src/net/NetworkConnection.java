@@ -36,19 +36,19 @@ public class NetworkConnection implements Runnable {
     public void run() {
         if (isServer) {
             try (ServerSocket serverSocket = new ServerSocket(NetUtils.PORT)) {
-                serverSocket.setSoTimeout(10 * 1000);
                 Socket socket = serverSocket.accept();
                 startInputOutput(socket);
 
-            } catch (IOException e) {
-                networkBroker.resetInput();
+            } catch (IOException ignored) {
+            } finally {
+                networkBroker.sendStop();
             }
         } else {
             try (Socket socket = new Socket(hostIp, NetUtils.PORT)) {
                 startInputOutput(socket);
             } catch (IOException ignored) {
             } finally {
-                networkBroker.resetInput();
+                networkBroker.sendStop();
             }
         }
     }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="278.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PopupController">
+   <children>
+      <Label fx:id="popupLabel" alignment="CENTER" layoutX="62.0" layoutY="37.0" prefHeight="102.0" prefWidth="195.0" text="Waiting for client..." textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <AnchorPane fx:id="serverPane" layoutX="92.0" layoutY="133.0" prefHeight="131.0" prefWidth="136.0">
+         <children>
+            <ProgressIndicator layoutX="44.0" layoutY="14.0" />
+            <Button layoutX="28.0" layoutY="78.0" mnemonicParsing="false" onAction="#cancelConnection" text="Cancel">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <ButtonBar fx:id="clientButtonBar" buttonMinWidth="0.0" layoutX="5.0" layoutY="203.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="48.0" prefWidth="302.0" visible="false">
+        <buttons>
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#declineInvitation" prefHeight="48.0" prefWidth="164.0" style="-fx-background-color: radial-gradient(focus-distance 0% , center 50% 50% , radius 200% , #ff0000, #000000);" text="Decline" translateX="-20.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#acceptInvitation" prefHeight="35.0" prefWidth="111.0" style="-fx-background-color: radial-gradient(focus-distance 0% , center 50% 50% , radius 300% , #00ee00, #000000);" text="Accept">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+        </buttons>
+      </ButtonBar>
+   </children>
+</AnchorPane>

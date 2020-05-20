@@ -4,20 +4,23 @@ import ai.AiPlayer;
 import gui.Drawer;
 import gui.GameOptions;
 import javafx.scene.canvas.Canvas;
+import net.NetworkBroker;
+import net.OnlinePlayer;
 
 public class GameLoop implements Runnable {
 
-    private GameType gameType;
     private Drawer drawer;
     private Board board;
     // Aki elindította a játékot
     private Player player;
     // Ellenfél játékos, lehet AI, lokális játékos, vagy online játékos
     private Player opponent;
+    private boolean stop = false;
+    private NetworkBroker networkBroker = null;
 
 
     public GameLoop(Canvas canvas, GameOptions options) {
-        this.gameType = options.getGameType();
+        GameType gameType = options.getGameType();
         int height = 8;
         int width = 8;
         this.board = new Board(width, height);
@@ -34,8 +37,14 @@ public class GameLoop implements Runnable {
                 opponent = new LocalPlayer("Player 2", TileType.LIGHT, options.getTimerStartValue());
                 break;
             case ONLINE:
+                this.networkBroker = options.getNetworkBroker();
                 player = new LocalPlayer(options.getName(), options.getPlayerColor(), options.getTimerStartValue());
-//                opponent = new OnlinePlayer(options.getName(), options.getPlayerColor(), options.getTimerStartValue());
+
+                opponent = new OnlinePlayer(options.getOppName(), options.getPlayerColor().enemyTileType(),
+                        options.getTimerStartValue());
+
+                networkBroker.registerEventListener("move;", opponent::setNextMove);
+                networkBroker.registerEventListener("stop;", this::exitGame);
                 break;
 
         }
@@ -68,23 +77,32 @@ public class GameLoop implements Runnable {
     @Override
     public void run() {
         drawer.start();
-        while (board.isActive()) {
+        while (board.isActive() && !stop) {
             Player currentPlayer = getCurrentPlayer();
-            if (currentPlayer.isHuman()) {
+            if (currentPlayer.isLocal()) {
                 Thread.yield();
             } else {
                 currentPlayer.makeMove(board);
             }
-
         }
         drawer.setStop();
     }
 
-    public void move(Coordinate pos) {
+    public void move(String message) {
         Player player = getCurrentPlayer();
-        if (player.isHuman()) {
-            player.setNextMove(pos);
+        if (player.isLocal()) {
+            player.setNextMove(message);
             player.makeMove(board);
+            if (networkBroker != null) {
+                networkBroker.sendToSocket(message);
+            }
         }
+    }
+
+    public Boolean exitGame(String message) {
+        stop = true;
+        if (networkBroker != null)
+            networkBroker.sendStop();
+        return true;
     }
 }

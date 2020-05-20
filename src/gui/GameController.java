@@ -1,6 +1,5 @@
 package gui;
 
-import gamelogic.Coordinate;
 import gamelogic.GameLoop;
 import gamelogic.Player;
 import javafx.event.ActionEvent;
@@ -55,6 +54,7 @@ public class GameController {
     void changeSceneToMenu(ActionEvent event) {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+        gameLoop.exitGame(null);
         window.setScene((this.menuScene));
         window.show();
     }
@@ -71,12 +71,13 @@ public class GameController {
         game.getDrawer().setController(this);
 
         gameThread.start();
+        gameThread.setName("Game thread");
         Player firstPlayer = gameLoop.getCurrentPlayer();
         darkName.setText(firstPlayer.getName());
         darkRect.setVisible(false);
         darkTimer.setText(firstPlayer.getTimerString());
         Player secondPlayer = gameLoop.getIdlePlayer();
-        lightName.setText(gameLoop.getIdlePlayer().getName());
+        lightName.setText(secondPlayer.getName());
         lightRect.setVisible(true);
         lightTimer.setText(secondPlayer.getTimerString());
     }
@@ -95,9 +96,8 @@ public class GameController {
 
         int x = (int) (event.getX() / rectangleWidth);
         int y = (int) (event.getY() / rectangleHeight);
-        Coordinate cor = new Coordinate(x, y);
 
-        gameLoop.move(cor);
+        gameLoop.move("move;" + x + ";" + y);
     }
 
     public Text getLightName() {

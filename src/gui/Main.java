@@ -14,7 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/gui.fxml"));
         window.setTitle("Reversi");
         window.setResizable(false);
-        window.setScene(new Scene(root, 654, 460));
+        window.setScene(new Scene(root));
         window.show();
         window.getIcons().add(new Image("/reversi_img.png"));
 

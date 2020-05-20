@@ -23,7 +23,7 @@ public class AiPlayer extends Player {
     private final ByteSequence[][] pieceByPositionHashes;
 
     public AiPlayer(String name, TileType color, int difficulty, int width, int height) {
-        super(name, color, Long.MAX_VALUE, false);
+        super(name, color, 0, false);
         difficultyTime = 1000 * (difficulty + 2) / 2;
 
         pieceByPositionHashes = new ByteSequence[width * height][2];

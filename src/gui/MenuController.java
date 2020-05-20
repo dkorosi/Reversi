@@ -2,15 +2,17 @@ package gui;
 
 import gamelogic.GameType;
 import gamelogic.TileType;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.NetUtils;
 import net.NetworkBroker;
 import net.NetworkConnection;
@@ -44,12 +46,10 @@ public class MenuController {
     @FXML
     private Text onlineMessage;
 
-    @FXML
-    private ButtonBar invitationButtonBar;
-
     private GameController gameController;
 
     private NetworkBroker networkBroker;
+    private PopupController popupController;
 
     /**
      * Inicializál néhány FXML node-ot
@@ -100,7 +100,7 @@ public class MenuController {
     String getMultiNameText() {
         String name = multiNameText.getText();
         if (name.isEmpty()) {
-            name = "Player";
+            name = "You";
         }
 
         return name.replace(';', ' ');
@@ -123,38 +123,77 @@ public class MenuController {
     @FXML
     void startListening() {
         if (networkBroker != null)
-            networkBroker.sendToSocket("stop;");
+            networkBroker.sendStop();
 
-        networkBroker = new NetworkBroker(this);
+        networkBroker = new NetworkBroker();
         NetworkConnection connection = new NetworkConnection(networkBroker);
 
         Thread netThread = new Thread(connection);
 
         netThread.start();
+        netThread.setName("Net Thread");
         String name = getMultiNameText();
+        if (name.equals("You"))
+            name = "Host";
         int timer = getTimerSliderMultiVal();
         TileType color = getColor(ONLINE);
         networkBroker.sendToSocket("serverstart;" + name + ";" + timer + ";" + color);
+
+        if (popupController == null) {
+            try {
+                popupController = getPopupController();
+            } catch (IOException ignored) {
+                System.err.println("Popup window cannot be created");
+                return;
+            }
+        }
+
+        networkBroker.registerEventListener("clientstart;", this::clientConnected);
+        networkBroker.registerEventListener("stop;", popupController::closePopup);
+        popupController.setNetworkBroker(networkBroker);
+        popupController.showServer();
+    }
+
+    private PopupController getPopupController() throws IOException {
+        Parent popupRoot;
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/popup.fxml"));
+        popupRoot = loader.load();
+
+        PopupController controller = loader.getController();
+        Scene popupScene = new Scene(popupRoot);
+        Stage popupWindow = new Stage(StageStyle.UNDECORATED);
+        popupWindow.setScene(popupScene);
+        controller.setStage(popupWindow);
+        return controller;
     }
 
     /**
      * HOST OLDAL
      * Ha a kliens üzenetet küldött, hogy elfogadja a játékot, visszaküldte a beállításokat és elindítjuk
      *
-     * @param networkBroker bróker
+     * @param message üzenet (stop vagy kezdés)
      */
-    public void clientConnected(NetworkBroker networkBroker) {
-        String message = networkBroker.getReceivedMessage();
-
-        if (message.startsWith("clientstart")) {
+    private Boolean clientConnected(String message) {
+        Platform.runLater(() -> {
             // Üzenet: clientstart;yourName;oppName;timer;yourColor
             String[] split = message.split(";");
 
-            GameOptions gameOptions = GameOptions.createOnlineGame(split[1], split[2], Integer.parseInt(split[3]),
-                    TileType.valueOf(split[4]), networkBroker);
+            String yourName = split[1];
+            String oppName = split[2];
+            if (oppName.equals("You"))
+                oppName = "client";
 
+            String timer = split[3];
+            String yourColor = split[4];
+            GameOptions gameOptions = GameOptions.createOnlineGame(yourName, oppName, Integer.parseInt(timer),
+                    TileType.valueOf(yourColor), networkBroker);
+
+            popupController.closePopup(null);
             changeSceneToCanvas(gameOptions);
-        }
+        });
+
+        return true;
     }
 
     /**
@@ -165,42 +204,37 @@ public class MenuController {
     void connectToGame() {
         // Ha már van életben kapcsolat, leállítjuk
         if (networkBroker != null) {
-            networkBroker.sendToSocket("stop;");
+            networkBroker.sendStop();
         }
-        networkBroker = new NetworkBroker(this);
+        networkBroker = new NetworkBroker();
+        networkBroker.registerEventListener("serverstart;", this::showClientPopup);
         String ipAddr = getMultiIPAddrText();
         NetworkConnection connection = new NetworkConnection(networkBroker, ipAddr);
 
         Thread netThread = new Thread(connection);
         netThread.start();
+        netThread.setName("Net thread");
     }
 
     /**
      * KLIENS OLDAL
-     * Kapcsolatfelvétel után fogadjuk a szerver üzenetét, kiírunk egy meghívást a felhasználónak
+     * Ha a szerver indított játékhívást, a bróker ezt a függvényt hívja, kliensnek feldob egy popup ablakot, ahol elfogadhatja a játékot
      *
-     * @param invMessage szerver által küldött üzenet
+     * @param message bróker által fogadott üzenet
+     * @return visszatérés alapján, a bróker kitörölheti mint event listener
      */
-    public void serverInvited(String invMessage) {
+    Boolean showClientPopup(String message) {
+        Platform.runLater(() -> {
+            // serverstart;hostplayername;timer;hostcolor
 
-        // Üzenet: serverstart;oppName;timer;oppColor
-        String[] split = invMessage.split(";");
-
-        String serverName = split[1];
-        invitationButtonBar.setVisible(true);
-        networkBroker.addReceivedMessage("start;");
-        onlineMessage.setText("Game invitation by " + serverName);
-    }
-
-    /**
-     * KLIENS OLDAL
-     * Felhasználó elfogadja a meghívást, küldünk válaszüzenetet, elkezdjük a játékot
-     */
-    @FXML
-    void acceptInvitation() {
-        // serverstart;hostplayername;timer;hostcolor
-        String message = networkBroker.getReceivedMessage();
-        if (message != null) {
+            if (popupController == null) {
+                try {
+                    popupController = getPopupController();
+                } catch (IOException ignored) {
+                    System.err.println("Popup window cannot be created");
+                    return;
+                }
+            }
 
             String[] split = message.split(";");
 
@@ -208,28 +242,27 @@ public class MenuController {
             String timer = split[2];
             String oppColor = split[3];
             String yourName = getMultiNameText();
+            if (yourName.equals("You"))
+                yourName = "Client";
+
             TileType yourColor = TileType.valueOf(oppColor).enemyTileType();
 
-            networkBroker.sendToSocket("clientstart;" + oppName + ";" + yourName + ";" + timer + ";" + oppColor);
             GameOptions gameOptions = GameOptions.createOnlineGame(yourName, oppName, Integer.parseInt(timer), yourColor, networkBroker);
-            changeSceneToCanvas(gameOptions);
-        }
+            popupController.setNetworkBroker(networkBroker);
+            popupController.setSceneChangeFunction(this::changeSceneToCanvas);
+            popupController.showClient(gameOptions);
+        });
+
+
+        return true;
     }
 
     /**
-     * Felhasználó elutasítja a meghívást
+     * Átállítja a képet a játéktérre, elindítja a játékot
+     * @param gameOptions játékbeállítások
+     * @return semmi
      */
-    @FXML
-    void declineInvitation() {
-        networkBroker.sendToSocket("stop;");
-        setDefaultOnlineMessage();
-        invitationButtonBar.setVisible(false);
-    }
-
-    private void changeSceneToCanvas(GameOptions gameOptions) {
-        // Eltüntetjük az accept, decline gombokat, hogy játék vége után ne jelenjen meg
-        setDefaultOnlineMessage();
-        invitationButtonBar.setVisible(false);
+    Void changeSceneToCanvas(GameOptions gameOptions) {
 
         // Bármelyik node alapján megkapjuk az ablakot
         Stage window = (Stage) timerSliderSingle.getScene().getWindow();
@@ -242,11 +275,11 @@ public class MenuController {
                 loader.load();
             } catch (IOException e) {
                 System.err.println("Cannot load fxml for game");
-                return;
+                return null;
             }
 
             gameController = loader.getController();
-            gameScene = new Scene(gameController.getRoot(), 700, 510);
+            gameScene = new Scene(gameController.getRoot());
 
             // passing menu scene so drawer controller can change back, and game scene so we can change to it
             gameController.setScenes(window.getScene(), gameScene);
@@ -255,8 +288,9 @@ public class MenuController {
         }
 
         gameController.startGame(gameOptions);
-        window.setScene((gameScene));
+        window.setScene(gameScene);
         window.show();
+        return null;
     }
 
     private TileType getColor(GameType gameType) {

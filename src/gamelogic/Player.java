@@ -3,19 +3,22 @@ package gamelogic;
 
 public abstract class Player {
     private String name;
-    private boolean isHuman; // Külső játékos-e vagy mi hívjuk a move függvényt
+    private boolean isLocal; // Külső játékos-e vagy mi hívjuk a move függvényt
     private TileType color;
     private long timer;
     private Coordinate nextMove;
+    private boolean moved = false;
 
-    public Player(String name, TileType color, long timer, boolean isHuman) {
+    public Player(String name, TileType color, long timer, boolean isLocal) {
         if (timer == 0) {
-            timer = Long.MAX_VALUE;
+            this.timer = Long.MAX_VALUE;
+        } else {
+            this.timer = timer * 1000;
         }
         this.name = name;
         this.color = color;
-        this.timer = timer;
-        this.isHuman = isHuman;
+        this.isLocal = isLocal;
+        nextMove = new Coordinate(-1,-1);
     }
 
     public long getTimer() {
@@ -46,14 +49,21 @@ public abstract class Player {
         return nextMove;
     }
 
-    public void setNextMove(Coordinate nextMove) {
-        this.nextMove = nextMove;
+    /**
+     * Üzenet string alapján beállítja a következő lépést, lokális és online játékosnál is használjuk
+     * @param nextMove üzenet (move;x;y)
+     * @return mindig false-t ad vissza, mert a broker event listener-jéből nem vesszük ki
+     */
+    public Boolean setNextMove(String nextMove) {
+        String[] split = nextMove.split(";");
+        this.nextMove = new Coordinate(Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+        return false;
     }
 
     public abstract void makeMove(Board board);
 
-    public boolean isHuman() {
-        return isHuman;
+    public boolean isLocal() {
+        return isLocal;
     }
 
     public String getTimerString() {
@@ -80,5 +90,17 @@ public abstract class Player {
             plusMin = "";
 
         return plusMin + min + ":" + plusSec + sec;
+    }
+
+    /**
+     * Ha már lépett akkor igaz, ha nem, akkor hamis
+     * @return lépett-e már
+     */
+    public boolean hasMoved(){
+        return moved;
+    }
+
+    public void setMoved() {
+        this.moved = true;
     }
 }

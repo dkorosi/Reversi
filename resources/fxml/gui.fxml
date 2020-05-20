@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
@@ -106,46 +105,24 @@
                            <items>
                               <VBox alignment="TOP_CENTER" prefHeight="208.0" prefWidth="421.0" spacing="10.0">
                                  <children>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="421.0">
-                                       <children>
-                                          <HBox alignment="CENTER" layoutX="-1.0" prefHeight="47.0" prefWidth="421.0">
-                                             <children>
-                                                <Text fx:id="onlineMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Game invitation by" wrappingWidth="223.13671875">
-                                                   <font>
-                                                      <Font size="17.0" />
-                                                   </font>
-                                                   <HBox.margin>
-                                                      <Insets left="10.0" />
-                                                   </HBox.margin>
-                                                </Text>
-                                                <ButtonBar fx:id="invitationButtonBar" prefHeight="25.0" prefWidth="146.0" visible="false">
-                                                   <buttons>
-                                                      <Button mnemonicParsing="false" onAction="#acceptInvitation" style="-fx-background-color: radial-gradient(focus-distance 0% , center 50% 50% , radius 150% , #00bb00, #eeeeee);" text="ACCEPT">
-                                                         <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                         </font>
-                                                      </Button>
-                                                      <Button mnemonicParsing="false" onAction="#declineInvitation" prefWidth="126.0" style="-fx-background-color: radial-gradient(focus-distance 0% , center 50% 50% , radius 200% , #ee0000, #eeeeee);" text="DECLINE">
-                                                         <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                         </font>
-                                                      </Button>
-                                                   </buttons>
-                                                </ButtonBar>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </AnchorPane>
-                                    <ButtonBar buttonOrder="" prefHeight="49.0" prefWidth="421.0">
+                                    <Text fx:id="onlineMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Your IP Address is:" textAlignment="CENTER" wrappingWidth="399.13671875">
+                                       <font>
+                                          <Font size="21.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                    <ButtonBar buttonOrder="" prefHeight="81.0" prefWidth="421.0">
                                        <buttons>
-                                          <Button alignment="CENTER" mnemonicParsing="false" onAction="#startListening" prefHeight="18.0" prefWidth="325.0" text="Host Game" textAlignment="CENTER">
+                                          <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="0.0" mnemonicParsing="false" onAction="#startListening" prefHeight="50.0" prefWidth="238.0" text="Host Game" textAlignment="CENTER">
                                              <font>
-                                                <Font name="System Bold" size="19.0" />
+                                                <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Button>
-                                          <Button mnemonicParsing="false" onAction="#connectToGame" prefHeight="8.0" text="Connect to Game" textAlignment="CENTER">
+                                          <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="0.0" mnemonicParsing="false" onAction="#connectToGame" prefHeight="50.0" prefWidth="307.0" text="Connect to Game" textAlignment="CENTER">
                                              <font>
-                                                <Font name="System Bold" size="19.0" />
+                                                <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Button>
                                        </buttons>
@@ -156,9 +133,9 @@
                                           <Insets right="20.0" />
                                        </padding>
                                     </ButtonBar>
-                                    <ButtonBar buttonMinWidth="10.0" prefHeight="79.0" prefWidth="421.0">
+                                    <ButtonBar buttonMinWidth="10.0" prefHeight="81.0" prefWidth="421.0">
                                        <buttons>
-                                          <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="0.0" mnemonicParsing="false" onAction="#startLocalGame" prefHeight="50.0" prefWidth="179.0" text="Local Game" textAlignment="CENTER" translateX="-120.0">
+                                          <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="0.0" mnemonicParsing="false" onAction="#startLocalGame" prefHeight="54.0" prefWidth="179.0" text="Local Game" textAlignment="CENTER" translateX="-120.0">
                                              <font>
                                                 <Font name="System Bold" size="24.0" />
                                              </font>
@@ -225,9 +202,9 @@
                                           <Font name="Arial" size="16.0" />
                                        </font>
                                     </TextField>
-                                    <Label alignment="CENTER" prefHeight="33.0" prefWidth="123.0" text="IP Address:" GridPane.rowIndex="2">
+                                    <Label alignment="CENTER" prefHeight="33.0" prefWidth="123.0" text="Host IP Address:" GridPane.rowIndex="2">
                                        <font>
-                                          <Font name="Arial Bold" size="16.0" />
+                                          <Font name="Arial Bold" size="14.0" />
                                        </font>
                                     </Label>
                                  </children>

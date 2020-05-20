@@ -1,24 +1,30 @@
 package net;
 
-import gui.MenuController;
+import javafx.util.Pair;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.function.Function;
 
+/**
+ * A hálózatra küldendő és beolvasott adatokat tárolja, konkurensen hozzáférnek a thread-ek
+ * Képes push notification-re ha az üzenet elejére lett beregisztrálva event listener,
+ * illetve le is lehet kérdezni a következő üzenetet manuálisan
+ */
 public class NetworkBroker {
 
     private final Queue<String> outputBuffer = new LinkedList<>();
     private final Queue<String> inputBuffer = new LinkedList<>();
 
-    // Ha érkezik start, értesítjük a controllert
-    private MenuController menuController;
+    private boolean stop = false;
 
-    public NetworkBroker(MenuController menuController) {
-        this.menuController = menuController;
-    }
+    private final Collection<Pair<String, Function<String, Boolean>>> eventListeners = new LinkedList<>();
 
     /**
      * Hálózatra küldendő üzenetek
+     *
      * @param message üzenet
      */
     public void sendToSocket(String message) {
@@ -28,31 +34,40 @@ public class NetworkBroker {
     }
 
     /**
-     * Hálózaton kapott üzenetek betevése
+     * Hálózaton kapott üzenetek betevése, minden üzenetnél megvizsgálja, hogy kell-e értesítenie valakit, ha van eventlistener akkor meghívjuk a függvényét
+     *
      * @param message üzenet
      */
     public void addReceivedMessage(String message) {
-        synchronized (inputBuffer) {
-            inputBuffer.add(message);
-        }
-
-        if (menuController != null) {
-            if (message.startsWith("serverstart;")) {
-                // Az üzenetet továbbítjuk a controllernek, nem vesszük ki a FIFO-ból, mert még kell nekünk a meghívás elfogadásánál
-                menuController.serverInvited(message);
-                menuController = null;
-            } else if (message.startsWith("clientstart")) {
-                // Controllert értesítjük hogy kliens csatlakozott hozzá
-                menuController.clientConnected(this);
-                menuController = null;
+        boolean pushed = false;
+        synchronized (eventListeners) {
+            Iterator<Pair<String, Function<String, Boolean>>> iterator = eventListeners.iterator();
+            while (iterator.hasNext()) {
+                Pair<String, Function<String, Boolean>> eventListener = iterator.next();
+                if (message.startsWith(eventListener.getKey())) {
+                    Boolean toRemove = eventListener.getValue().apply(message);
+                    if (toRemove)
+                        iterator.remove();
+                    pushed = true;
+                }
             }
-
         }
 
+        if (!pushed)
+            synchronized (inputBuffer) {
+                inputBuffer.add(message);
+            }
+    }
+
+    public void registerEventListener(String prefix, Function<String, Boolean> function) {
+        synchronized (eventListeners) {
+            eventListeners.add(new Pair<>(prefix, function));
+        }
     }
 
     /**
      * Fogadott üzenet lekérdezése
+     *
      * @return üzenet
      */
     public String getReceivedMessage() {
@@ -63,6 +78,7 @@ public class NetworkBroker {
 
     /**
      * Hálózatra küldendő üzenet lekérése
+     *
      * @return
      */
     public String getPendingMessageToSend() {
@@ -71,10 +87,22 @@ public class NetworkBroker {
         }
     }
 
-    public void resetInput() {
+    /**
+     * Ha vége a kapcsolatnak, vagy valami probléma történik, mindenki értesítünk, hogy vége
+     */
+    public void sendStop() {
         synchronized (inputBuffer) {
             inputBuffer.clear();
             inputBuffer.add("stop;");
         }
+        synchronized (outputBuffer) {
+            outputBuffer.clear();
+            outputBuffer.add("stop;");
+        }
+        stop = true;
+    }
+
+    public boolean isStopped() {
+        return stop;
     }
 }

@@ -33,18 +33,17 @@ public class Drawer extends AnimationTimer {
 
     private void refreshTimer() {
         Player currentPlayer = controller.getGameLoop().getCurrentPlayer();
-        if (lastCurrentPlayer == currentPlayer && lastTime != 0) {
+        if (lastCurrentPlayer == currentPlayer && lastTime != 0 && currentPlayer.hasMoved()) {
             long sysTimer = System.currentTimeMillis();
             currentPlayer.decrementTimer(sysTimer - lastTime);
-            lastTime = sysTimer;
             if (currentPlayer.getColor() == DARK)
                 controller.getDarkTimer().setText(currentPlayer.getTimerString());
             else
                 controller.getLightTimer().setText(currentPlayer.getTimerString());
         } else {
-            lastTime = System.currentTimeMillis();
             lastCurrentPlayer = currentPlayer;
         }
+        lastTime = System.currentTimeMillis();
     }
 
     public void setCanvas(Canvas canvas) {
@@ -96,7 +95,7 @@ public class Drawer extends AnimationTimer {
         drawPlayers(gc, tileWidth, tileHeight);
 
         // Lehetséges lépések rajzolása
-        if (controller.getGameLoop().getCurrentPlayer().isHuman())
+        if (controller.getGameLoop().getCurrentPlayer().isLocal())
             drawValidMoves(gc, tileWidth, tileHeight);
     }
 
