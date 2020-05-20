@@ -3,20 +3,20 @@ package gui;
 import gamelogic.Board;
 import gamelogic.Coordinate;
 import gamelogic.Player;
+import gamelogic.TileType;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 import java.util.List;
 
-import static gamelogic.TileType.DARK;
-import static gamelogic.TileType.LIGHT;
+import static gamelogic.TileType.*;
 import static javafx.scene.paint.Color.BLACK;
-import static javafx.scene.paint.Color.WHITE;
 
-public class Drawer extends AnimationTimer  {
+public class Drawer extends AnimationTimer {
 
     // Ha vége a játéknak ezt állítjuk be
     private boolean stop = false;
@@ -64,15 +64,21 @@ public class Drawer extends AnimationTimer  {
         if (stop) {
             drawBoard();
             GraphicsContext gc = this.canvas.getGraphicsContext2D();
-            gc.setFill(board.getWinning() == LIGHT ? WHITE : BLACK);
+
+            TileType winnerTile = board.getWinning();
+            Color winnerColor = winnerTile.getColor();
             gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            gc.fillOval((canvas.getWidth()-200)/2, (canvas.getHeight()-200)/2, 200, 200);
+            gc.setFill(winnerColor);
             gc.setStroke(BLACK);
-            gc.strokeOval((canvas.getWidth()-200)/2, (canvas.getHeight()-200)/2, 200, 200);
-            String name = controller.getGameLoop().getCurrentPlayer().getName();
+            gc.fillOval((canvas.getWidth() - 200) / 2, (canvas.getHeight() - 200) / 2, 200, 200);
+            gc.strokeOval((canvas.getWidth() - 200) / 2, (canvas.getHeight() - 200) / 2, 200, 200);
+            String winnerName = controller.getGameLoop().getNameByTile(winnerTile);
             gc.setFill(BLACK);
             gc.setFont(new Font(30));
-            gc.fillText("Winner: " + name,(canvas.getWidth()-200)/2,(canvas.getHeight()-200)/4);
+            gc.setTextAlign(TextAlignment.CENTER);
+
+            String text = winnerTile != EMPTY ? "Winner: " + winnerName : "DRAW";
+            gc.fillText(text, (canvas.getWidth()) / 2, (canvas.getHeight()) / 4);
             this.stop();
         }
     }
@@ -133,13 +139,9 @@ public class Drawer extends AnimationTimer  {
         gc.setStroke(BLACK);
         for (int i = 0; i < this.board.getHeight(); i++) { // y
             for (int j = 0; j < this.board.getWidth(); j++) { // x
-                this.board.getTile(new Coordinate(j, i));
-                if (DARK == this.board.getTile(new Coordinate(j, i))) {
-                    gc.setFill(BLACK);
-                    gc.fillOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
-                    gc.strokeOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
-                } else if (LIGHT == this.board.getTile(new Coordinate(j, i))) {
-                    gc.setFill(WHITE);
+                TileType tile = this.board.getTile(new Coordinate(j, i));
+                if (tile != EMPTY) {
+                    gc.setFill(tile.getColor());
                     gc.fillOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
                     gc.strokeOval(j * tileWidth + xStart, i * tileHeight + yStart, ovalWidth, ovalHeight);
                 }

@@ -51,11 +51,6 @@ public class AiPlayer extends Player {
         if (initialGameState != null)
             parentSimulations = initialGameState.getSimulations();
 
-        if (moves.size() == 1) {
-            board.makeMoveAt(getColor(), moves.get(1));
-            return;
-        }
-
         for (Coordinate move : moves) {
             double score;
             Board boardAfterMove = new Board(board.getBoard(), getColor());
@@ -92,6 +87,8 @@ public class AiPlayer extends Player {
     private double simulateRecursive(Board board, ByteSequence boardHash) {
         TileType nextColor = board.getCurrent();
         List<Coordinate> changedCoordinates = makeRandomMove(board);
+        if (changedCoordinates == null)
+            return 0;
         if (board.isActive()) {
             ByteSequence hash = changeBoardHash(boardHash, nextColor, changedCoordinates, board.getWidth());
             double score = simulateRecursive(board, hash);
@@ -131,6 +128,8 @@ public class AiPlayer extends Player {
     }
 
     private ByteSequence changeBoardHash(ByteSequence initialHash, TileType color, List<Coordinate> changedCoordinates, int boardWidth) {
+        if (changedCoordinates == null)
+            return initialHash;
         byte[] newHash = new byte[HASH_LENGTH];
         for (int i = 0; i < HASH_LENGTH; i++) {
             newHash[i] = initialHash.getBytes()[i];
@@ -149,6 +148,8 @@ public class AiPlayer extends Player {
     private List<Coordinate> makeRandomMove(Board board) {
         List<Coordinate> moves = board.getValidCoordinates();
 
+        if (moves.isEmpty())
+            return null;
         Coordinate randomMove = moves.get(rand.nextInt(moves.size()));
         return board.makeMoveAt(board.getCurrent(), randomMove);
     }

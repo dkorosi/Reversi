@@ -3,13 +3,13 @@ package gui;
 import gamelogic.GameType;
 import gamelogic.TileType;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -17,6 +17,8 @@ import net.NetUtils;
 import net.NetworkBroker;
 import net.NetworkConnection;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -46,10 +48,22 @@ public class MenuController {
     @FXML
     private Text onlineMessage;
 
+    @FXML
+    private TableView<StatisticRow> statisticsTable;
+    @FXML
+    private TableColumn<StatisticRow, String> gameTypeCol;
+    @FXML
+    private TableColumn<StatisticRow, String> firstPlayerCol;
+    @FXML
+    private TableColumn<StatisticRow, String> secondPlayerCol;
+    @FXML
+    private TableColumn<StatisticRow, String> winnerCol;
+
     private GameController gameController;
 
     private NetworkBroker networkBroker;
     private PopupController popupController;
+    private boolean statisticsLoaded;
 
     /**
      * Inicializál néhány FXML node-ot
@@ -64,6 +78,12 @@ public class MenuController {
         difficultyTG.getToggles().get(1).setUserData(1);
         difficultyTG.getToggles().get(2).setUserData(2);
 
+        gameTypeCol.setCellValueFactory(new PropertyValueFactory<>("gameType"));
+        firstPlayerCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        secondPlayerCol.setCellValueFactory(new PropertyValueFactory<>("secondName"));
+        winnerCol.setCellValueFactory(new PropertyValueFactory<>("winnerName"));
+
+        loadStatistics();
         setDefaultOnlineMessage();
     }
 
@@ -253,12 +273,31 @@ public class MenuController {
             popupController.showClient(gameOptions);
         });
 
-
         return true;
+    }
+
+
+    @FXML
+    void loadStatistics() {
+        if (!statisticsLoaded) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("./resources/statistics.csv"))) {
+                ObservableList<StatisticRow> data = statisticsTable.getItems();
+                data.clear();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    StatisticRow row = StatisticRow.createStatisticRow(line);
+                    data.add(row);
+                }
+            } catch (IOException e) {
+                System.err.println("Error occurred reading statistics.csv or not exists");
+            }
+        }
+        statisticsLoaded = true;
     }
 
     /**
      * Átállítja a képet a játéktérre, elindítja a játékot
+     *
      * @param gameOptions játékbeállítások
      * @return semmi
      */
@@ -289,7 +328,8 @@ public class MenuController {
 
         gameController.startGame(gameOptions);
         window.setScene(gameScene);
-        window.show();
+        // Majd töltsük újra a táblát
+        statisticsLoaded = false;
         return null;
     }
 

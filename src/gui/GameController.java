@@ -56,7 +56,6 @@ public class GameController {
 
         gameLoop.exitGame(null);
         window.setScene((this.menuScene));
-        window.show();
     }
 
     public GameLoop getGameLoop() {

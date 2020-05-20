@@ -79,6 +79,14 @@ public class Board {
         calculateValidMoves(current);
     }
 
+    public void setAll(TileType color) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                setTile(color, x, y);
+            }
+        }
+    }
+
     /**
      * A lépési szabályokat ellenőrző osztály.
      *

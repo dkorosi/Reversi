@@ -3,9 +3,13 @@ package gamelogic;
 import ai.AiPlayer;
 import gui.Drawer;
 import gui.GameOptions;
+import gui.StatisticRow;
 import javafx.scene.canvas.Canvas;
 import net.NetworkBroker;
 import net.OnlinePlayer;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class GameLoop implements Runnable {
 
@@ -15,12 +19,14 @@ public class GameLoop implements Runnable {
     private Player player;
     // Ellenfél játékos, lehet AI, lokális játékos, vagy online játékos
     private Player opponent;
+
+    private GameType gameType;
     private boolean stop = false;
     private NetworkBroker networkBroker = null;
 
 
     public GameLoop(Canvas canvas, GameOptions options) {
-        GameType gameType = options.getGameType();
+        gameType = options.getGameType();
         int height = 8;
         int width = 8;
         this.board = new Board(width, height);
@@ -33,8 +39,8 @@ public class GameLoop implements Runnable {
                         options.getPlayerColor().enemyTileType(), options.getDifficulty(), width, height);
                 break;
             case LOCAL:
-                player = new LocalPlayer("Player 1", TileType.DARK, options.getTimerStartValue());
-                opponent = new LocalPlayer("Player 2", TileType.LIGHT, options.getTimerStartValue());
+                player = new LocalPlayer("Black", TileType.DARK, options.getTimerStartValue());
+                opponent = new LocalPlayer("White", TileType.LIGHT, options.getTimerStartValue());
                 break;
             case ONLINE:
                 this.networkBroker = options.getNetworkBroker();
@@ -43,10 +49,10 @@ public class GameLoop implements Runnable {
                 opponent = new OnlinePlayer(options.getOppName(), options.getPlayerColor().enemyTileType(),
                         options.getTimerStartValue());
 
+                // Event listenere-eket regisztráljuk lépésre és kilépésre
                 networkBroker.registerEventListener("move;", opponent::setNextMove);
                 networkBroker.registerEventListener("stop;", this::exitGame);
                 break;
-
         }
 
         this.drawer = new Drawer(canvas, board);
@@ -85,7 +91,25 @@ public class GameLoop implements Runnable {
                 currentPlayer.makeMove(board);
             }
         }
+        saveResults();
         drawer.setStop();
+    }
+
+    private void saveResults() {
+
+        TileType winner = board.getWinning();
+        String winnerName;
+        if (winner == TileType.EMPTY) {
+            winnerName = "DRAW";
+        } else
+            winnerName = getNameByTile(winner);
+
+        try (FileWriter csvWriter = new FileWriter("./resources/statistics.csv", true)) {
+
+            csvWriter.write(new StatisticRow(gameType.toString(), player.getName(), opponent.getName(), winnerName).toCsvLine());
+        } catch (IOException e) {
+            System.err.println("Error writing to statistics csv");
+        }
     }
 
     public void move(String message) {
@@ -103,6 +127,26 @@ public class GameLoop implements Runnable {
         stop = true;
         if (networkBroker != null)
             networkBroker.sendStop();
+        // Játékot feladta az ellenfél, mi nyerünk 64-0-ra
+        if (message != null) {
+            if (gameType == GameType.LOCAL) {
+                board.setAll(getCurrentPlayer().getColor());
+            } else
+                board.setAll(player.getColor());
+        } else {
+            // Mi léptünk ki
+            if (gameType == GameType.LOCAL) {
+                board.setAll(getCurrentPlayer().getColor().enemyTileType());
+            } else
+                board.setAll(opponent.getColor());
+        }
         return true;
+    }
+
+    public String getNameByTile(TileType tileType) {
+        if (player.getColor() == tileType)
+            return player.getName();
+        else
+            return opponent.getName();
     }
 }

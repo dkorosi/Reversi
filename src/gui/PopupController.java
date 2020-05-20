@@ -23,7 +23,6 @@ public class PopupController {
 
     private Stage popupWindow;
 
-    private MenuController menuController;
     private NetworkBroker networkBroker;
     private GameOptions gameOptions;
     private Function<GameOptions, Void> changeSceneToCanvas;
