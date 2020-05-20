@@ -7,6 +7,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import static gamelogic.TileType.LIGHT;
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
 
-public class Drawer extends AnimationTimer {
+public class Drawer extends AnimationTimer  {
 
     // Ha vége a játéknak ezt állítjuk be
     private boolean stop = false;
@@ -64,7 +65,14 @@ public class Drawer extends AnimationTimer {
             drawBoard();
             GraphicsContext gc = this.canvas.getGraphicsContext2D();
             gc.setFill(board.getWinning() == LIGHT ? WHITE : BLACK);
-            gc.fillOval(10, 10, 200, 200);
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            gc.fillOval((canvas.getWidth()-200)/2, (canvas.getHeight()-200)/2, 200, 200);
+            gc.setStroke(BLACK);
+            gc.strokeOval((canvas.getWidth()-200)/2, (canvas.getHeight()-200)/2, 200, 200);
+            String name = controller.getGameLoop().getCurrentPlayer().getName();
+            gc.setFill(BLACK);
+            gc.setFont(new Font(30));
+            gc.fillText("Winner: " + name,(canvas.getWidth()-200)/2,(canvas.getHeight()-200)/4);
             this.stop();
         }
     }
@@ -157,5 +165,9 @@ public class Drawer extends AnimationTimer {
      */
     public void setStop() {
         this.stop = true;
+    }
+
+    public boolean getStop() {
+        return stop;
     }
 }
