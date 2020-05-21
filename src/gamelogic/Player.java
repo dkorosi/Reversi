@@ -29,6 +29,10 @@ public abstract class Player {
         this.timer = absTime;
     }
 
+    public boolean timeRunOut() {
+        return timer <= 0;
+    }
+
     public void incrementTimer(long relTime) {
         this.timer += relTime;
     }

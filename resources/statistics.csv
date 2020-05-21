@@ -1,0 +1,39 @@
+SINGLE,Player 1,Cpu(1),Cpu(1)
+SINGLE,Player 1,Cpu(1),DRAW
+SINGLE,Player 1,Cpu(1),DRAW
+SINGLE,Player 1,Cpu(1),Cpu(1)
+SINGLE,Player 1,Cpu(1),Cpu(1)
+SINGLE,Player 1,Cpu(1),Cpu(1)
+LOCAL,Black,White,White
+LOCAL,Black,White,Black
+ONLINE,gecilada,fasszopo,fasszopo
+ONLINE,fasszopo,gecilada,fasszopo
+ONLINE,fasszopo,gecilada,gecilada
+ONLINE,gecilada,fasszopo,gecilada
+ONLINE,gecilada,fasszopo,fasszopo
+ONLINE,fasszopo,gecilada,fasszopo
+SINGLE,Player 1,Cpu(1),Cpu(1)
+LOCAL,Black,White,White
+ONLINE,Host,Client,Client
+ONLINE,Client,Host,Client
+ONLINE,Client,Host,Client
+ONLINE,Host,Client,Host
+LOCAL,Black,White,Black
+ONLINE,Client,Host,Client
+ONLINE,Host,Client,Host
+ONLINE,Client,Host,Client
+ONLINE,Host,Client,Host
+ONLINE,Host,Client,Host
+ONLINE,Client,Host,Client
+ONLINE,Host,Client,Host
+ONLINE,Client,Host,Host
+ONLINE,Client,Host,Client
+ONLINE,Host,Client,Host
+ONLINE,Client,Host,Client
+ONLINE,Host,Client,Host
+ONLINE,Client,Host,Host
+LOCAL,Black,White,Black
+LOCAL,Black,White,White
+SINGLE,Player 1,Cpu(1),Cpu(1)
+SINGLE,Player 1,Cpu(1),Player 1
+SINGLE,Player 1,Cpu(1),Cpu(1)

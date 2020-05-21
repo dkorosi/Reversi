@@ -76,6 +76,15 @@ public class GameLoop implements Runnable {
             return player;
     }
 
+    public Player getOutOfTimePlayer() {
+        if (player.timeRunOut())
+            return player;
+        else if (opponent.timeRunOut())
+            return opponent;
+        else
+            return null;
+    }
+
     public Board getBoard() {
         return board;
     }
@@ -85,6 +94,9 @@ public class GameLoop implements Runnable {
         drawer.start();
         while (board.isActive() && !stop) {
             Player currentPlayer = getCurrentPlayer();
+            if (currentPlayer.timeRunOut()) {
+                exitGame(null);
+            }
             if (currentPlayer.isLocal()) {
                 Thread.yield();
             } else {
@@ -125,20 +137,25 @@ public class GameLoop implements Runnable {
 
     public Boolean exitGame(String message) {
         stop = true;
-        if (networkBroker != null)
-            networkBroker.sendStop();
-        // Játékot feladta az ellenfél, mi nyerünk 64-0-ra
-        if (message != null) {
-            if (gameType == GameType.LOCAL) {
-                board.setAll(getCurrentPlayer().getColor());
-            } else
-                board.setAll(player.getColor());
+
+        Player outOfTimePlayer = getOutOfTimePlayer();
+        // Time ran out
+        if (outOfTimePlayer != null) {
+            board.setAll(outOfTimePlayer.getColor().enemyTileType());
         } else {
-            // Mi léptünk ki
-            if (gameType == GameType.LOCAL) {
-                board.setAll(getCurrentPlayer().getColor().enemyTileType());
-            } else
-                board.setAll(opponent.getColor());
+            // Játékot feladta az ellenfél, mi nyerünk 64-0-ra
+            if (message != null) {
+                board.setAll(player.getColor());
+            } else {
+
+                if (networkBroker != null)
+                    networkBroker.sendStop();
+                // Mi léptünk ki
+                if (gameType == GameType.LOCAL) {
+                    board.setAll(getIdlePlayer().getColor());
+                } else
+                    board.setAll(player.getColor());
+            }
         }
         return true;
     }
