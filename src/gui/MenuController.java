@@ -280,7 +280,7 @@ public class MenuController {
     @FXML
     void loadStatistics() {
         if (!statisticsLoaded) {
-            try (BufferedReader reader = new BufferedReader(new FileReader("./resources/statistics.csv"))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("./data/statistics.csv"))) {
                 ObservableList<StatisticRow> data = statisticsTable.getItems();
                 data.clear();
                 String line;

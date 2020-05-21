@@ -8,8 +8,10 @@ import javafx.scene.canvas.Canvas;
 import net.NetworkBroker;
 import net.OnlinePlayer;
 
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Properties;
 
 public class GameLoop implements Runnable {
 
@@ -27,16 +29,15 @@ public class GameLoop implements Runnable {
 
     public GameLoop(Canvas canvas, GameOptions options) {
         gameType = options.getGameType();
-        int height = 8;
-        int width = 8;
-        this.board = new Board(width, height);
+        int boardDim = getBoardDim();
+        this.board = new Board(boardDim, boardDim);
 
         // Itt lesz majd a megfelelő játékosinicializálás
         switch (gameType) {
             case SINGLE:
                 player = new LocalPlayer("Player 1", options.getPlayerColor(), options.getTimerStartValue());
                 opponent = new AiPlayer("Cpu(" + (options.getDifficulty() + 1) + ")",
-                        options.getPlayerColor().enemyTileType(), options.getDifficulty(), width, height);
+                        options.getPlayerColor().enemyTileType(), options.getDifficulty(), boardDim, boardDim);
                 break;
             case LOCAL:
                 player = new LocalPlayer("Black", TileType.DARK, options.getTimerStartValue());
@@ -56,6 +57,18 @@ public class GameLoop implements Runnable {
         }
 
         this.drawer = new Drawer(canvas, board);
+    }
+
+    private int getBoardDim() {
+        Properties prop = new Properties();
+        try (FileInputStream fileInputStream = new FileInputStream("./data/config.properties")) {
+            prop.load(fileInputStream);
+            String boardDimString = prop.getProperty("board_dim", "8");
+            return Integer.parseInt(boardDimString);
+        } catch (IOException e) {
+            System.err.println("Config file not found");
+            return 8;
+        }
     }
 
     public Drawer getDrawer() {
@@ -116,7 +129,7 @@ public class GameLoop implements Runnable {
         } else
             winnerName = getNameByTile(winner);
 
-        try (FileWriter csvWriter = new FileWriter("./resources/statistics.csv", true)) {
+        try (FileWriter csvWriter = new FileWriter("./data/statistics.csv", true)) {
 
             csvWriter.write(new StatisticRow(gameType.toString(), player.getName(), opponent.getName(), winnerName).toCsvLine());
         } catch (IOException e) {
