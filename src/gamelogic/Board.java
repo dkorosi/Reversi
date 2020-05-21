@@ -1,5 +1,6 @@
 package gamelogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author borszag
  */
-public class Board {
+public class Board implements Serializable {
     /**
      * A játéktábla magassága.
      */
@@ -92,7 +93,7 @@ public class Board {
      *
      * @author borszag
      */
-    private class PossibleMove {
+    private class PossibleMove implements Serializable {
         private Coordinate pos;
         /**
          * A megadott koordinátához tartozó lépés érvényessége.

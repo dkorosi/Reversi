@@ -62,9 +62,11 @@ public class GameController {
         return gameLoop;
     }
 
-    void startGame(GameOptions options) {
+    boolean startGame(GameOptions options) {
 
         GameLoop game = new GameLoop(this.canvas, options);
+        if (game.getDrawer() == null)
+            return false;
         this.gameLoop = game;
         Thread gameThread = new Thread(game);
         game.getDrawer().setController(this);
@@ -79,6 +81,7 @@ public class GameController {
         lightName.setText(secondPlayer.getName());
         lightRect.setVisible(true);
         lightTimer.setText(secondPlayer.getTimerString());
+        return true;
     }
 
     Canvas getCanvas() {

@@ -16,6 +16,7 @@ public class GameOptions {
     private TileType playerColor;
 
     private NetworkBroker networkBroker;
+    private boolean loaded = false;
 
     /**
      * @param gameType        játékmód
@@ -36,6 +37,11 @@ public class GameOptions {
         this.oppName = oppName;
         this.playerColor = playerColor;
         this.networkBroker = networkBroker;
+    }
+
+    public GameOptions(GameType gameType, boolean loaded) {
+        this.gameType = gameType;
+        this.loaded = loaded;
     }
 
     /**
@@ -74,6 +80,10 @@ public class GameOptions {
         return new GameOptions(GameType.ONLINE, timerStartValue, 0, name, oppName, playerColor, networkBroker);
     }
 
+    public static GameOptions createLoadedGame() {
+        return new GameOptions(GameType.SINGLE, true);
+    }
+
     public GameType getGameType() {
         return gameType;
     }
@@ -100,5 +110,9 @@ public class GameOptions {
 
     public NetworkBroker getNetworkBroker() {
         return networkBroker;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
     }
 }

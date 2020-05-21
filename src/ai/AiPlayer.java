@@ -5,6 +5,8 @@ import gamelogic.Coordinate;
 import gamelogic.Player;
 import gamelogic.TileType;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.*;
 
 /**
@@ -17,7 +19,8 @@ public class AiPlayer extends Player {
 
     private int difficultyTime;
     private Random rand = new Random();
-    private Map<ByteSequence, GameState> gameStates = new HashMap<>();
+
+    private transient Map<ByteSequence, GameState> gameStates = new HashMap<>();
 
     // Teljesítmény érdekében
     private final ByteSequence[][] pieceByPositionHashes;
@@ -163,5 +166,10 @@ public class AiPlayer extends Player {
             }
         }
         return Objects.requireNonNull(maxEntry).getKey();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        gameStates = new HashMap<>();
     }
 }

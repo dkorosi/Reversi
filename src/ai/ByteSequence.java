@@ -1,11 +1,12 @@
 package ai;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * Egy bájttömböt tárol, hogy kulcsként tudjon működni egy hashtable-ben
  */
-public class ByteSequence {
+public class ByteSequence implements Serializable {
 
     private byte[] bytes;
 

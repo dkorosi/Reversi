@@ -105,9 +105,7 @@ public class MenuController {
 
     @FXML
     void loadSingleGame() {
-        // Itt a timer a betöltött játéké legyen
-
-//        changeSceneToCanvas(event, SINGLE, getTimerSliderSingleVal());
+        changeSceneToCanvas(GameOptions.createLoadedGame());
     }
 
     @FXML
@@ -326,10 +324,12 @@ public class MenuController {
             gameScene = gameController.getGameScene();
         }
 
-        gameController.startGame(gameOptions);
-        window.setScene(gameScene);
-        // Majd töltsük újra a táblát
-        statisticsLoaded = false;
+        boolean successfulStarted = gameController.startGame(gameOptions);
+        if (successfulStarted) {
+            window.setScene(gameScene);
+            // Majd töltsük újra a táblát
+            statisticsLoaded = false;
+        }
         return null;
     }
 

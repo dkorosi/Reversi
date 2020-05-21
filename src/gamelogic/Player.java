@@ -1,7 +1,9 @@
 package gamelogic;
 
 
-public abstract class Player {
+import java.io.Serializable;
+
+public abstract class Player implements Serializable {
     private String name;
     private boolean isLocal; // Külső játékos-e vagy mi hívjuk a move függvényt
     private TileType color;

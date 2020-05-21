@@ -8,9 +8,7 @@ import javafx.scene.canvas.Canvas;
 import net.NetworkBroker;
 import net.OnlinePlayer;
 
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 public class GameLoop implements Runnable {
@@ -26,36 +24,44 @@ public class GameLoop implements Runnable {
     private boolean stop = false;
     private NetworkBroker networkBroker = null;
 
+    // Ha elmentettük a játékot
+    private boolean saved = false;
+
 
     public GameLoop(Canvas canvas, GameOptions options) {
-        gameType = options.getGameType();
-        int boardDim = getBoardDim();
-        this.board = new Board(boardDim, boardDim);
+        if (options.isLoaded()) {
+            boolean successfulLoaded = loadGame();
+            if (!successfulLoaded)
+                return;
+        } else {
+            gameType = options.getGameType();
+            int boardDim = getBoardDim();
+            this.board = new Board(boardDim, boardDim);
 
-        // Itt lesz majd a megfelelő játékosinicializálás
-        switch (gameType) {
-            case SINGLE:
-                player = new LocalPlayer("Player 1", options.getPlayerColor(), options.getTimerStartValue());
-                opponent = new AiPlayer("Cpu(" + (options.getDifficulty() + 1) + ")",
-                        options.getPlayerColor().enemyTileType(), options.getDifficulty(), boardDim, boardDim);
-                break;
-            case LOCAL:
-                player = new LocalPlayer("Black", TileType.DARK, options.getTimerStartValue());
-                opponent = new LocalPlayer("White", TileType.LIGHT, options.getTimerStartValue());
-                break;
-            case ONLINE:
-                this.networkBroker = options.getNetworkBroker();
-                player = new LocalPlayer(options.getName(), options.getPlayerColor(), options.getTimerStartValue());
+            // A megfelelő játékosinicializálás
+            switch (gameType) {
+                case SINGLE:
+                    player = new LocalPlayer("Player 1", options.getPlayerColor(), options.getTimerStartValue());
+                    opponent = new AiPlayer("Cpu(" + (options.getDifficulty() + 1) + ")",
+                            options.getPlayerColor().enemyTileType(), options.getDifficulty(), boardDim, boardDim);
+                    break;
+                case LOCAL:
+                    player = new LocalPlayer("Black", TileType.DARK, options.getTimerStartValue());
+                    opponent = new LocalPlayer("White", TileType.LIGHT, options.getTimerStartValue());
+                    break;
+                case ONLINE:
+                    this.networkBroker = options.getNetworkBroker();
+                    player = new LocalPlayer(options.getName(), options.getPlayerColor(), options.getTimerStartValue());
 
-                opponent = new OnlinePlayer(options.getOppName(), options.getPlayerColor().enemyTileType(),
-                        options.getTimerStartValue());
+                    opponent = new OnlinePlayer(options.getOppName(), options.getPlayerColor().enemyTileType(),
+                            options.getTimerStartValue());
 
-                // Event listenere-eket regisztráljuk lépésre és kilépésre
-                networkBroker.registerEventListener("move;", opponent::setNextMove);
-                networkBroker.registerEventListener("stop;", this::exitGame);
-                break;
+                    // Event listenere-eket regisztráljuk lépésre és kilépésre
+                    networkBroker.registerEventListener("move;", opponent::setNextMove);
+                    networkBroker.registerEventListener("stop;", this::exitGame);
+                    break;
+            }
         }
-
         this.drawer = new Drawer(canvas, board);
     }
 
@@ -116,7 +122,9 @@ public class GameLoop implements Runnable {
                 currentPlayer.makeMove(board);
             }
         }
-        saveResults();
+        // Ha nem mentettünk játékot, akkor vége
+        if (!saved)
+            saveResults();
         drawer.setStop();
     }
 
@@ -160,15 +168,47 @@ public class GameLoop implements Runnable {
             if (message != null) {
                 board.setAll(player.getColor());
             } else {
-
                 if (networkBroker != null)
                     networkBroker.sendStop();
                 // Mi léptünk ki
                 if (gameType == GameType.LOCAL) {
                     board.setAll(getIdlePlayer().getColor());
+                } else if (gameType == GameType.SINGLE) {
+                    // Ha single és még fut a játék, elmentjük
+                    if (board.isActive()) {
+                        saveGame();
+                        saved = true;
+                    }
                 } else
                     board.setAll(player.getColor());
             }
+        }
+        return true;
+    }
+
+    private void saveGame() {
+        try (ObjectOutput boardOut = new ObjectOutputStream(new FileOutputStream("./data/savegame/board.ser"));
+             ObjectOutput playerOut = new ObjectOutputStream(new FileOutputStream("./data/savegame/player.ser"));
+             ObjectOutput opponentOut = new ObjectOutputStream(new FileOutputStream("./data/savegame/opponent.ser"))) {
+            boardOut.writeObject(board);
+            playerOut.writeObject(player);
+            opponentOut.writeObject(opponent);
+        } catch (IOException e) {
+            System.err.println("Cannot save game");
+        }
+    }
+
+    private boolean loadGame() {
+        try (ObjectInput boardIn = new ObjectInputStream(new FileInputStream("./data/savegame/board.ser"));
+             ObjectInput playerIn = new ObjectInputStream(new FileInputStream("./data/savegame/player.ser"));
+             ObjectInput opponentIn = new ObjectInputStream(new FileInputStream("./data/savegame/opponent.ser"))) {
+            board = (Board) boardIn.readObject();
+            player = (Player) playerIn.readObject();
+            opponent = (Player) opponentIn.readObject();
+            gameType = GameType.SINGLE;
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Cannot load game");
+            return false;
         }
         return true;
     }

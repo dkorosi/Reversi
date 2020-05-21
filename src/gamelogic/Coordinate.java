@@ -1,11 +1,13 @@
 package gamelogic;
 
+import java.io.Serializable;
+
 /**
  * A lépések megadásához szükséges koordinátákat megvalósító osztály.
  *
  * @author borszag
  */
-public class Coordinate {
+public class Coordinate implements Serializable {
     private int x;
     private int y;
 
