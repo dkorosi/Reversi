@@ -22,7 +22,7 @@
                                        <buttons>
                                           <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#startSingleGame" prefWidth="180.0" text="New Game" textAlignment="CENTER" translateX="-120.0">
                                              <font>
-                                                <Font name="System Bold" size="24.0" />
+                                                <Font name="System Bold" size="22.0"/>
                                              </font>
                                           </Button>
                                        </buttons>
@@ -34,7 +34,7 @@
                                        <buttons>
                                           <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loadSingleGame" prefWidth="180.0" text="Load Game" textAlignment="CENTER" translateX="-120.0">
                                              <font>
-                                                <Font name="System Bold" size="24.0" />
+                                                <Font name="System Bold" size="22.0"/>
                                              </font>
                                           </Button>
                                        </buttons>
@@ -137,7 +137,7 @@
                                        <buttons>
                                           <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="0.0" mnemonicParsing="false" onAction="#startLocalGame" prefHeight="54.0" prefWidth="179.0" text="Local Game" textAlignment="CENTER" translateX="-120.0">
                                              <font>
-                                                <Font name="System Bold" size="24.0" />
+                                                <Font name="System Bold" size="20.0"/>
                                              </font>
                                           </Button>
                                        </buttons>
