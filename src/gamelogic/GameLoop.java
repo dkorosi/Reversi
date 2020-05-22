@@ -27,6 +27,8 @@ public class GameLoop implements Runnable {
     // Ha elmentettük a játékot
     private boolean saved = false;
 
+    private static final int DEFAULT_BOARD_SIZE = 8;
+
 
     public GameLoop(Canvas canvas, GameOptions options) {
         if (options.isLoaded()) {
@@ -41,7 +43,7 @@ public class GameLoop implements Runnable {
             // A megfelelő játékosinicializálás
             switch (gameType) {
                 case SINGLE:
-                    player = new LocalPlayer("Player 1", options.getPlayerColor(), options.getTimerStartValue());
+                    player = new LocalPlayer("Player", options.getPlayerColor(), options.getTimerStartValue());
                     opponent = new AiPlayer("Cpu(" + (options.getDifficulty() + 1) + ")",
                             options.getPlayerColor().enemyTileType(), options.getDifficulty(), boardDim, boardDim);
                     break;
@@ -66,14 +68,16 @@ public class GameLoop implements Runnable {
     }
 
     private int getBoardDim() {
+        if (gameType == GameType.ONLINE)
+            return DEFAULT_BOARD_SIZE;
         Properties prop = new Properties();
         try (FileInputStream fileInputStream = new FileInputStream("./data/config.properties")) {
             prop.load(fileInputStream);
-            String boardDimString = prop.getProperty("board_dim", "8");
+            String boardDimString = prop.getProperty("board_dim", String.valueOf(DEFAULT_BOARD_SIZE));
             return Integer.parseInt(boardDimString);
         } catch (IOException e) {
             System.err.println("Config file not found");
-            return 8;
+            return DEFAULT_BOARD_SIZE;
         }
     }
 
@@ -158,7 +162,6 @@ public class GameLoop implements Runnable {
 
     // Titkos függvény
     public Boolean exitGame(String message) {
-        stop = true;
 
         Player outOfTimePlayer = getOutOfTimePlayer();
         // Time ran out
@@ -178,12 +181,13 @@ public class GameLoop implements Runnable {
                     // Ha single és még fut a játék, elmentjük
                     if (board.isActive()) {
                         saveGame();
-                        saved = true;
                     }
                 } else
                     board.setAll(player.getColor());
             }
         }
+
+        stop = true;
         return true;
     }
 
@@ -191,6 +195,7 @@ public class GameLoop implements Runnable {
         try (ObjectOutput boardOut = new ObjectOutputStream(new FileOutputStream("./data/savegame/board.ser"));
              ObjectOutput playerOut = new ObjectOutputStream(new FileOutputStream("./data/savegame/player.ser"));
              ObjectOutput opponentOut = new ObjectOutputStream(new FileOutputStream("./data/savegame/opponent.ser"))) {
+            saved = true;
             boardOut.writeObject(board);
             playerOut.writeObject(player);
             opponentOut.writeObject(opponent);

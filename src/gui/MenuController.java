@@ -12,14 +12,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import net.NetUtils;
 import net.NetworkBroker;
 import net.NetworkConnection;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.UnknownHostException;
 
 import static gamelogic.GameType.ONLINE;
@@ -167,7 +164,7 @@ public class MenuController {
         }
 
         networkBroker.registerEventListener("clientstart;", this::clientConnected);
-        networkBroker.registerEventListener("stop;", popupController::closePopup);
+//        networkBroker.registerEventListener("stop;", popupController::closePopup);
         popupController.setNetworkBroker(networkBroker);
         popupController.showServer();
     }
@@ -180,7 +177,7 @@ public class MenuController {
 
         PopupController controller = loader.getController();
         Scene popupScene = new Scene(popupRoot);
-        Stage popupWindow = new Stage(StageStyle.UNDECORATED);
+        Stage popupWindow = new Stage();
         popupWindow.setScene(popupScene);
         controller.setStage(popupWindow);
         return controller;
@@ -293,6 +290,17 @@ public class MenuController {
         statisticsLoaded = true;
     }
 
+    @FXML
+    void resetStatistics() {
+        try (BufferedWriter ignored = new BufferedWriter(new FileWriter("./data/statistics.csv"))) {
+            ObservableList<StatisticRow> data = statisticsTable.getItems();
+            data.clear();
+        } catch (IOException e) {
+            System.err.println("Error occurred reading statistics.csv or not exists");
+        }
+
+    }
+
     /**
      * Átállítja a képet a játéktérre, elindítja a játékot
      *
@@ -303,6 +311,8 @@ public class MenuController {
 
         // Bármelyik node alapján megkapjuk az ablakot
         Stage window = (Stage) timerSliderSingle.getScene().getWindow();
+
+        setUpCloseListener(window);
 
         Scene gameScene;
         if (gameController == null) {
@@ -331,6 +341,17 @@ public class MenuController {
             statisticsLoaded = false;
         }
         return null;
+    }
+
+    private void setUpCloseListener(Stage window) {
+        window.setOnCloseRequest(e -> {
+                    if (networkBroker != null) {
+                        networkBroker.sendStop();
+                    }
+                    Platform.exit();
+                    System.exit(0);
+                }
+        );
     }
 
     private TileType getColor(GameType gameType) {
