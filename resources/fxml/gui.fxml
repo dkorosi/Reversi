@@ -218,14 +218,24 @@
                   </Tab>
                   <Tab onSelectionChanged="#loadStatistics" text="Statistics">
                      <content>
-                        <TableView fx:id="statisticsTable" prefHeight="431.0" prefWidth="421.0">
-                           <columns>
-                              <TableColumn fx:id="gameTypeCol" prefWidth="100.0" text="Game Type"/>
-                              <TableColumn fx:id="firstPlayerCol" prefWidth="110.0" text="First player"/>
-                              <TableColumn fx:id="secondPlayerCol" prefWidth="98.0" text="Second Player"/>
-                              <TableColumn fx:id="winnerCol" prefWidth="125.0" text="Winner"/>
-                           </columns>
-                        </TableView>
+                         <VBox alignment="TOP_CENTER" spacing="25.0">
+                             <children>
+                                 <TableView fx:id="statisticsTable" prefHeight="344.0" prefWidth="421.0">
+                                     <columns>
+                                         <TableColumn fx:id="gameTypeCol" prefWidth="100.0" text="Game Type"/>
+                                         <TableColumn fx:id="firstPlayerCol" prefWidth="110.0" text="First player"/>
+                                         <TableColumn fx:id="secondPlayerCol" prefWidth="98.0" text="Second Player"/>
+                                         <TableColumn fx:id="winnerCol" prefWidth="125.0" text="Winner"/>
+                                     </columns>
+                                 </TableView>
+                                 <Button alignment="CENTER" mnemonicParsing="false" onAction="#resetStatistics"
+                                         prefHeight="39.0" prefWidth="134.0" text="Reset Statistics">
+                                     <font>
+                                         <Font name="System Bold" size="14.0"/>
+                                     </font>
+                                 </Button>
+                             </children>
+                         </VBox>
                      </content>
                   </Tab>
                </tabs>
