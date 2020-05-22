@@ -4,12 +4,12 @@
 ** Áttekintés
 *** Az alkalmazás funciói
 **** Egy- és többjátékos mód
-A felhasználó képes a saját számítógépén AI ellen játékot indítani, emellett
-helyi hálózaton képes egy másik személy ellen játszani. A hálózati játék
-megkezdése előtt meg kell adni egy felhasználónevet és IP címet, mely
-segítségével kapcsolódhat a két kliens.
+A felhasználó játszhat egyjátékos módban AI ellen és többjátékos módban egy számítógépen
+egy másik játékossal, illetve online helyi hálózaton egy másik játékossal.
+A hálózati játék megkezdése előtt a host megadja a felhasználónevét és a játékbeállításokat,
+a kliens pedig a nevét és a host IP címét, mely segítségével kapcsolódik a host-hoz.
 
-A játékmódot a főmenüben választhatjuk ki, beállítások módosítására külön menüpont van.
+A játékmódot és a beállításokat a főmenüben adhatjuk meg.
 **** Többszintű néhézségi szint
 A felhasználó az egyszemélyes játékmódban több nehézségi szinten tud a
 számítógép ellen játszani. Minden módban lehetőség van maximális
@@ -17,7 +17,8 @@ lépésre fordítható idő beállítására, ezzel is finomhangolva a nehézsé
 szintet.
 **** Állítható táblaméret 
 A játék elindulásakor beolvasásra kerül a data/config.properties fájl,
-amit a Properties API-val dolgozunk fel. 
+amit a Properties API-val dolgozunk fel. Ez a fájl az összes játkra érvényes beállításokat tartalmazza,
+jelenleg csak táblaméretet.
 *** Mentés és betöltés
 Egyjátékos módban lehetőség van a játékállás elmentésére és későbbi
 betöltésére. Minden módban elmentésre kerülnek a végeredmények, amik
@@ -32,7 +33,7 @@ Ezen a tabon lehet kezdeményezni számítógép elleni játékot. Amennyiben
 az idő 0-ra van beállítva, nincs időkorlát.
 
 Az elérhető beállítások:
- - Kezdőszín
+ - Játékos színe
  - Nehézségi szint (könnyű, közepes, nehéz)
  - Időzítő (0-20 perc)
 **** Multiplayer
@@ -45,16 +46,15 @@ Megadható név is, de ha üresen hagyjuk, akkor a játékot kezdeményező
 játékos neve "Host", a kihívott játékos neve "Client" lesz.
 
 A kezdeményező játékos által állítható paraméterek:
- - Kezdőszín
+ - Az ő színe
  - Név
- - Ellenfél IP címe
  - Időzítő
 
 Ha a beállítások megfelelőek a "Host Game" gombra kattintva lehet
 várakozni az ellenfél játékos csatlakozására.
 
 Az ellenfél játékosnak pedig meg kell adnia a host IP címét, és a
-"Connect to Game" gombra kattintva tud csatlakozni a játékhoz.
+"Connect" gombra kattintva tud csatlakozni a játékhoz.
 **** Statistics
 Az korábbi játékok eredményét tartalmazó tab.
 
@@ -85,9 +85,9 @@ feladásával jár.
 - GameController
   - Az aktív játék során kezeli a grafikus felületet, azaz megjeleníti
     az aktuális játékállást, a hátralévő időt, és a játékosok neveit.
-  - Kezeli a kilépést, illetve Singleplayerben a mentést is.
+  - Kezeli a kilépést.
 - PopupController
-  - A hálózati játék esetén a játékkérelmet jelzi.
+  - A hálózati játék esetén a játékkérelmet jelzi
 - Drawer
   A játékteret egy ú.n. AnimationTimer modulból származtattuk
   le, így ez is megvalósít egy időzítést. A játéktér frissítése is
@@ -107,15 +107,15 @@ feladásával jár.
   - Az érvényes lépések meghatározása
   - Az aktuális játékállás eldöntése
 - Player
-  - Absztrakt osztály, ebből
-  - Egyszemélye mód esetén a játéktábla alapján a mesterséges
+  - Absztrakt osztály, ebből származik le a LocalPlayer, AiPlayer és az OnlinePlayer
+  - Egyszemélyes mód esetén a játéktábla alapján a mesterséges
     intelligencia következő lépését adja meg
 - NetworkConnection
   - Felveszi a kapcsolatot a másik játékossal
   - Várja a másik játékos lépéseit
 ** Használt technológiák
 - A grafikus megjelenítéshez JavaFX könyvtár és Scene Builder program használata
-- Beállítások módosítására és beolvasására Preferences API
+- Külső beállítások beolvasására Properties API
 - Hálózati kapcsolat kezelésére a java.net könyvtárat használjuk
 ** Feladatmegosztás
 - Bence
@@ -161,7 +161,7 @@ szimulációban vizsgált, ezért nagyobb biztonsággal meg tudja
 állapítani, hogy mennyire jó az a lépés a lookup table
 segítségével. Az AI azt a lépést választja, melyhez nagyobb UCT (Upper
 Confidence Bound 1 applied to Trees) érték
-tartozik. $\frac{w_i}{n_i} + c \sqrt{\frac{\text{ln}(N_i)}{n_i}}$ ,
+tartozik. $\frac{w}{n} + c \sqrt{\frac{\text{ln}(N)}{n}}$ ,
 ahol $w$ a lépéshez tartozó érték, $n$ a lépéshez tartozó szimulációk
 száma, $N$ a szülőállapothoz tartozó szimulációk száma, $c$ pedig egy
 konstans paraméter, általában $\sqrt{2}$.
@@ -178,7 +178,7 @@ TCP szerverszoketet, melyhez a kliens kapcsolódhat. Az üzenetküldést
 fogadott üzeneteket egy-egy FIFO-ba tesszük, melyekhez több szálon
 keresztül hozzáférünk. A FIFO-kat a NetworkBroker osztály deklarálja,
 és ezt az osztályt használja minden üzenetküldő, fogadó
-objektum. String üzeneteket használunk és minden üzenettípushoz
+objektum figyelve a konkurens használatra. String üzeneteket használunk és minden üzenettípushoz
 rendelünk eseményfüggvényeket, melyeket megfelelő érkezett üzenet
 alapján meghívunk.
 
