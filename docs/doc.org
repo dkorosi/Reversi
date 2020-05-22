@@ -1,9 +1,12 @@
 #+TITLE: Reversi
-#+OPTIONS: toc:nil 
+#+DATE: 2020. 05. 22.
+#+AUTHOR: Cseppentő Viktor, Kőrösi Dániel, Ország Bence
+#+OPTIONS: toc:nil
 * Dokumentáció
 ** Áttekintés
 *** Az alkalmazás funciói
 **** Egy- és többjátékos mód
+
 A felhasználó játszhat egyjátékos módban AI ellen és többjátékos módban egy számítógépen
 egy másik játékossal, illetve online helyi hálózaton egy másik játékossal.
 A hálózati játék megkezdése előtt a host megadja a felhasználónevét és a játékbeállításokat,
@@ -11,15 +14,14 @@ a kliens pedig a nevét és a host IP címét, mely segítségével kapcsolódik
 
 A játékmódot és a beállításokat a főmenüben adhatjuk meg.
 **** Többszintű néhézségi szint
+
 A felhasználó az egyszemélyes játékmódban több nehézségi szinten tud a
 számítógép ellen játszani. Minden módban lehetőség van maximális
 lépésre fordítható idő beállítására, ezzel is finomhangolva a nehézségi
 szintet.
-**** Állítható táblaméret 
-A játék elindulásakor beolvasásra kerül a data/config.properties fájl,
-amit a Properties API-val dolgozunk fel. Ez a fájl az összes játkra érvényes beállításokat tartalmazza,
-jelenleg csak táblaméretet.
-*** Mentés és betöltés
+
+**** Mentés és betöltés
+
 Egyjátékos módban lehetőség van a játékállás elmentésére és későbbi
 betöltésére. Minden módban elmentésre kerülnek a végeredmények, amik
 megjeleníthetők a program "Statistics" fülén.
@@ -29,6 +31,7 @@ A játék indítása és a beállításai is mind grafikus felületen történne
 
 A főmenüben három tab van, ezek a "Singleplayer", "Multiplayer", "Statistics".
 **** Singleplayer
+
 Ezen a tabon lehet kezdeményezni számítógép elleni játékot. Amennyiben
 az idő 0-ra van beállítva, nincs időkorlát.
 
@@ -37,6 +40,7 @@ Az elérhető beállítások:
  - Nehézségi szint (könnyű, közepes, nehéz)
  - Időzítő (0-20 perc)
 **** Multiplayer
+
 Ezen a tabon lehet elindítani lokális vagy helyi hálózati játékot.
 
 A kapcsolódás megkönnyítése érdekében megjelenítésre kerül a
@@ -56,6 +60,7 @@ várakozni az ellenfél játékos csatlakozására.
 Az ellenfél játékosnak pedig meg kell adnia a host IP címét, és a
 "Connect" gombra kattintva tud csatlakozni a játékhoz.
 **** Statistics
+
 Az korábbi játékok eredményét tartalmazó tab.
 
 Egy befejezett játékról tárolásra kerül
@@ -117,18 +122,10 @@ feladásával jár.
 - A grafikus megjelenítéshez JavaFX könyvtár és Scene Builder program használata
 - Külső beállítások beolvasására Properties API
 - Hálózati kapcsolat kezelésére a java.net könyvtárat használjuk
-** Feladatmegosztás
-- Bence
-  - Játék logikája
-  - Hálózatkezelés
-  - Játék mentés és visszaállítás
-- Dániel
-  - Grafikus felület kialakítása
-  - Játékmező interakciójának és megjelenítésének az implementálása
-- Viktor
-  - Grafikus felület kialakítása
-  - Játék vezérlése
-  - Mesterséges intelligencia implementálása
+** Állítható táblaméret
+ A játék elindulásakor beolvasásra kerül a data/config.properties fájl,
+ amit a Properties API-val dolgozunk fel. Ez a fájl az összes játkra érvényes beállításokat tartalmazza,
+ jelenleg csak táblaméretet.
 ** Szálak
 Összesen 4 fő szálon fut az alkalmazás, ezek az alábbiak:
 
@@ -161,7 +158,7 @@ szimulációban vizsgált, ezért nagyobb biztonsággal meg tudja
 állapítani, hogy mennyire jó az a lépés a lookup table
 segítségével. Az AI azt a lépést választja, melyhez nagyobb UCT (Upper
 Confidence Bound 1 applied to Trees) érték
-tartozik. $\frac{w}{n} + c \sqrt{\frac{\text{ln}(N)}{n}}$ ,
+tartozik. $\text{UCT} = \frac{w}{n} + c \sqrt{\frac{\text{ln}(N)}{n}}$ ,
 ahol $w$ a lépéshez tartozó érték, $n$ a lépéshez tartozó szimulációk
 száma, $N$ a szülőállapothoz tartozó szimulációk száma, $c$ pedig egy
 konstans paraméter, általában $\sqrt{2}$.
@@ -192,11 +189,14 @@ Négyféle üzenettípus van:
   játékot. Ilyenkor minden játék, és hálózat szálat befejezünk.
 
 Egy üzenettípushoz több esemény is tartozhat.
+
+\pagebreak
 * Tesztelés
 Az alkalmazás funkcióinak helyes működése egyszerű teszteléssel került
 megállapításra. A tesztelés során a grafikus felületen hajtottunk
 végre input szekvenciákat, amelyeknek feljegyeztük a hatását, és hogy
 mi az elvárt működés az adott esetben.
+
 ** Egyjátékos mód
 Ebben az esetben azt ellenőrizzük, hogy az egyjátékos mód megfelelően
 elindul-e, illetve a játékálllás elmentése, majd visszaállítása
@@ -204,27 +204,64 @@ helyesen történik-e meg.
 
 A felületen végrehajtott lépések:
 - A játék elindítása alapbeállítások mellett.
-- Egy lépés megtétele után kilépés a játékból.
-- Az elmentett játékállás visszatöltése, ezzel ellenőrizve, hogy a
-  korábbi tábla állapot jelenik-e meg.
+#+ATTR_LATEX: :width 250px
+[[./img/test-single-start.png]]
 
+\pagebreak
+- Egy lépés megtétele.
+#+ATTR_LATEX: :width 250px
+ [[./img/test-single-step.png]]
+- Kilépés a játékból.
+#+ATTR_LATEX: :width 250px
+[[./img/test-single-exit.png]]
+
+\pagebreak
+- Az elmentett játékállás visszatöltése
+#+ATTR_LATEX: :width 250px
+[[./img/test-single-load.png]]
+
+- A visszatöltött állapot ellenőrzése.
+#+ATTR_LATEX: :width 250px
+ [[./img/test-single-loaded.png]]
+
+\pagebreak
 ** Lokális játék
 A teszt során a statisztikák frissítését ellenőrizzük. Az egyik játékos
 kilép, ezzel feladva a játékot.
 
 A felületen végrehajtott lépések:
 - A játék elindítása alapbeállítások mellett.
+#+ATTR_LATEX: :width 250px
+ [[./img/test-local-start.png]]
 - Egy lépés megtétele után kilépés a játékból, ezzel feladva azt.
+#+ATTR_LATEX: :width 250px
+ [[./img/test-local-step.png]]
+
+\pagebreak
 - A "Statistics" tabon ellenőrizni, hogy jelen van-e az új játék eredménye.
+#+ATTR_LATEX: :width 250px
+ [[./img/test-local-exit.png]]
 
 ** Lokális játék időzítővel
 A teszt során az időzítő helyes működését ellenőrizzük.
-
 A felületen végrehajtott lépések:
 - Lokális játék elindítása alapbeállítások mellett.
-- Egy lépés megtétele után várakozás az időzítő lejárásáig.
-- Ellenőrizni, hogy valóban az ellenfél győzött-e.
+#+ATTR_LATEX: :width 250px
+ [[./img/test-timer-start.png]]
 
+\pagebreak
+- Egy lépés megtétele, hogy elinduljon az időzítő.
+#+ATTR_LATEX: :width 250px
+[[./img/test-timer-step.png]]
+
+- Az időzítő megvárása
+#+ATTR_LATEX: :width 250px
+ [[./img/test-timer-wait.png]]
+
+\pagebreak
+- Ellenőrizni, hogy valóban az ellenfél győzött-e.
+#+ATTR_LATEX: :width 250px
+ [[./img/test-timer-end.png]]
 ** Hálózati játék
 Az alkalmazást két példányban elindítva (a fejlesztői környezet ezt
 lokálisan képes megtenni).
@@ -236,20 +273,39 @@ A másik példányban a nevet kell beállítani("Játékos 2"), és az IP
 címét a másiknak (ami éppen a localhost, hiszen egy gépen futnak, így
 üresen is hagyható a mező).
 
+\pagebreak
+Az első felületen végrehajtott lépések:
+- Multiplayer tabon a fenti beállítások megadása. "Host Game" gombra
+  kattintással a várakozást jelző pop-up ablak előhívása.
+#+ATTR_LATEX: :width 250px
+[[./img/test-net-start.png]]
 
-Az első felületen végrahjtott lépések:
-- Multiplayer tabon a fenti beállítások megadása.
-- "Host Game" gombra kattintással a várakozást jelző pop-up ablak előhívása.
 - Várakozás a másik játékos kapcsolódására.
-
+#+ATTR_LATEX: :width 250px
+[[./img/test-net-wait.png]]
 A második felületen végrehajtott lépések:
 - Várakozás amíg a kezdeményező játékos elindítja a várakozást bejövő
   kapcsolatra.
-- Connect gomb megnyomása, majd a kapcsolat elfogadása.
-- Kilépés
-** Tábla méretének módosítása
+- Csatlakozás
+#+ATTR_LATEX: :width 250px
+[[./img/test-net-connect.png]]
+- Majd a kapcsolat elfogadása.
+#+ATTR_LATEX: :width 250px
+[[./img/test-net-client-popup.png]]
+- Játék
+#+ATTR_LATEX: :width 250px
+[[./img/test-net-start-board.png]]
 
+- Kilépés
+#+ATTR_LATEX: :width 250px
+[[./img/test-net-end.png]]
+
+\pagebreak
+** Tábla méretének módosítása
 A végrehajtott lépések:
- - /data/config.properties fájl módosítása: board_dim=8 => 12
+ - /data/config.properties fájl módosítása: ~board_dim= 8 => 12~
  - Alkalmazás elindítása
  - Lokális játék indítása
+#+ATTR_LATEX: :width 250px
+[[./img/test-board-size.png]]
+
