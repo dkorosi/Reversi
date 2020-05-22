@@ -120,9 +120,12 @@
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Button>
-                                          <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="0.0" mnemonicParsing="false" onAction="#connectToGame" prefHeight="50.0" prefWidth="307.0" text="Connect to Game" textAlignment="CENTER">
+                                          <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity"
+                                                  minHeight="0.0" mnemonicParsing="false" onAction="#connectToGame"
+                                                  prefHeight="50.0" prefWidth="307.0" text="Connect"
+                                                  textAlignment="CENTER">
                                              <font>
-                                                <Font name="System Bold" size="18.0" />
+                                                <Font name="System Bold" size="18.0"/>
                                              </font>
                                           </Button>
                                        </buttons>
