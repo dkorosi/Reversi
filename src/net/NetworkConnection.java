@@ -64,7 +64,7 @@ public class NetworkConnection implements Runnable {
                     outputStream.write(message);
                     outputStream.newLine();
                     outputStream.flush();
-                    if (message.equals("stop;"))
+                    if ("stop;".equals(message))
                         break;
                 }
 
@@ -72,7 +72,7 @@ public class NetworkConnection implements Runnable {
                 String line;
                 if (inputStream.ready() && (line = inputStream.readLine()) != null) {
                     networkBroker.addReceivedMessage(line);
-                    if (line.equals("stop;"))
+                    if ("stop;".equals(line))
                         break;
                 }
             }

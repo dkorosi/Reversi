@@ -84,10 +84,6 @@ public class GameController {
         return true;
     }
 
-    Canvas getCanvas() {
-        return this.canvas;
-    }
-
     @FXML
     void canvasClicked(MouseEvent event) {
         double boardHeight = this.gameLoop.getBoard().getHeight();
@@ -102,68 +98,28 @@ public class GameController {
         gameLoop.move("move;" + x + ";" + y);
     }
 
-    public Text getLightName() {
-        return lightName;
-    }
-
-    public void setLightName(Text lightName) {
-        this.lightName = lightName;
-    }
-
     public Text getLightTimer() {
         return lightTimer;
-    }
-
-    public void setLightTimer(Text lightTimer) {
-        this.lightTimer = lightTimer;
     }
 
     public Text getDarkTiles() {
         return darkTiles;
     }
 
-    public void setDarkTiles(Text darkTiles) {
-        this.darkTiles = darkTiles;
-    }
-
     public Text getLightTiles() {
         return lightTiles;
-    }
-
-    public void setLightTiles(Text lightTiles) {
-        this.lightTiles = lightTiles;
-    }
-
-    public Text getDarkName() {
-        return darkName;
-    }
-
-    public void setDarkName(Text darkName) {
-        this.darkName = darkName;
     }
 
     public Text getDarkTimer() {
         return darkTimer;
     }
 
-    public void setDarkTimer(Text darkTimer) {
-        this.darkTimer = darkTimer;
-    }
-
     public Rectangle getDarkRect() {
         return darkRect;
     }
 
-    public void setDarkRect(Rectangle darkRect) {
-        this.darkRect = darkRect;
-    }
-
     public Rectangle getLightRect() {
         return lightRect;
-    }
-
-    public void setLightRect(Rectangle lightRect) {
-        this.lightRect = lightRect;
     }
 
     public Parent getRoot() {

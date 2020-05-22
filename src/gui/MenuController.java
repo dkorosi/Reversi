@@ -151,7 +151,7 @@ public class MenuController {
         netThread.start();
         netThread.setName("Net Thread");
         String name = getMultiNameText();
-        if (name.equals("You"))
+        if ("You".equals(name))
             name = "Host";
         int timer = getTimerSliderMultiVal();
         TileType color = getColor(ONLINE);
@@ -199,7 +199,7 @@ public class MenuController {
 
             String yourName = split[1];
             String oppName = split[2];
-            if (oppName.equals("You"))
+            if ("You".equals(oppName))
                 oppName = "client";
 
             String timer = split[3];
@@ -260,7 +260,7 @@ public class MenuController {
             String timer = split[2];
             String oppColor = split[3];
             String yourName = getMultiNameText();
-            if (yourName.equals("You"))
+            if ("You".equals(yourName))
                 yourName = "Client";
 
             TileType yourColor = TileType.valueOf(oppColor).enemyTileType();

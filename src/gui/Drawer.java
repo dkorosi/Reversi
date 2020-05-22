@@ -47,10 +47,6 @@ public class Drawer extends AnimationTimer {
         lastTime = System.currentTimeMillis();
     }
 
-    public void setCanvas(Canvas canvas) {
-        this.canvas = canvas;
-    }
-
     public void setController(GameController controller) {
         this.controller = controller;
     }
@@ -169,7 +165,4 @@ public class Drawer extends AnimationTimer {
         this.stop = true;
     }
 
-    public boolean getStop() {
-        return stop;
-    }
 }

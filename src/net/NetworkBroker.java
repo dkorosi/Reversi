@@ -18,8 +18,6 @@ public class NetworkBroker {
     private final Queue<String> outputBuffer = new LinkedList<>();
     private final Queue<String> inputBuffer = new LinkedList<>();
 
-    private boolean stop = false;
-
     private final Collection<Pair<String, Function<String, Boolean>>> eventListeners = new LinkedList<>();
 
     /**
@@ -99,10 +97,5 @@ public class NetworkBroker {
             outputBuffer.clear();
             outputBuffer.add("stop;");
         }
-        stop = true;
-    }
-
-    public boolean isStopped() {
-        return stop;
     }
 }

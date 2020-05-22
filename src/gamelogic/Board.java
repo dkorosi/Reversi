@@ -260,7 +260,6 @@ public class Board implements Serializable {
             calculateValidMoves(temp);
             if (validMoves.isEmpty()) {
                 active = false;
-                TileType winner = getWinning();
             }
         }
         current = temp;

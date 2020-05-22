@@ -23,20 +23,8 @@ public abstract class Player implements Serializable {
         nextMove = new Coordinate(-1,-1);
     }
 
-    public long getTimer() {
-        return timer;
-    }
-
-    public void setTimer(long absTime) {
-        this.timer = absTime;
-    }
-
-    public boolean timeRunOut() {
+    public boolean isTimeRunOut() {
         return timer <= 0;
-    }
-
-    public void incrementTimer(long relTime) {
-        this.timer += relTime;
     }
 
     public void decrementTimer(long relTime) {

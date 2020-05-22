@@ -76,9 +76,7 @@ public class PopupController {
     }
 
     public Boolean closePopup(String message) {
-        Platform.runLater(() -> {
-            popupWindow.close();
-        });
+        Platform.runLater(() -> popupWindow.close());
         return true;
     }
 

@@ -96,9 +96,9 @@ public class GameLoop implements Runnable {
     }
 
     public Player getOutOfTimePlayer() {
-        if (player.timeRunOut())
+        if (player.isTimeRunOut())
             return player;
-        else if (opponent.timeRunOut())
+        else if (opponent.isTimeRunOut())
             return opponent;
         else
             return null;
@@ -113,7 +113,7 @@ public class GameLoop implements Runnable {
         drawer.start();
         while (board.isActive() && !stop) {
             Player currentPlayer = getCurrentPlayer();
-            if (currentPlayer.timeRunOut()) {
+            if (currentPlayer.isTimeRunOut()) {
                 exitGame(null);
             }
             if (currentPlayer.isLocal()) {
