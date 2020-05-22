@@ -156,6 +156,7 @@ public class GameLoop implements Runnable {
         }
     }
 
+    // Titkos függvény
     public Boolean exitGame(String message) {
         stop = true;
 

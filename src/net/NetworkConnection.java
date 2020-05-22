@@ -61,7 +61,6 @@ public class NetworkConnection implements Runnable {
                 // Ha van üzenet elküldjük
                 String message = networkBroker.getPendingMessageToSend();
                 if (message != null) {
-                    System.out.println("Sending message: " + message);
                     outputStream.write(message);
                     outputStream.newLine();
                     outputStream.flush();
@@ -72,7 +71,6 @@ public class NetworkConnection implements Runnable {
                 // Ha lehetséges olvasunk
                 String line;
                 if (inputStream.ready() && (line = inputStream.readLine()) != null) {
-                    System.out.println("Received message: " + line);
                     networkBroker.addReceivedMessage(line);
                     if (line.equals("stop;"))
                         break;
