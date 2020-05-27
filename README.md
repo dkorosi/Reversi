@@ -1,4 +1,4 @@
-# pep2-hf
+# Reversi
 A beágyazott rendszerek szoftvertechnológiája tárgy beadandó házifeladata
 
 ## Futtatás
